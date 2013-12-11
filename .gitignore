@@ -1,0 +1,7 @@
+*.DS_STORE
+._*
+tmp/cache/*
+tmp/captcha/*
+tmp/logs/*
+tmp/sessions/*
+.idea/*
