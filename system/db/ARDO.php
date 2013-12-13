@@ -72,88 +72,57 @@ class ARDO extends TableObject {
             }
         }
         $first = true;
-        $previous = '';
+        $prev = '';
         foreach($results as $class => $data) {
             if($first) {
-                $this->set_class_variables(array_shift($data));
+                $prev = $this->_relate($this, array_shift($data), false);
                 $first = false;
-                $prev = $this;
             } else {
-                if(is_array($prev)) {
-                    if(is_array($data)) {
-                        foreach($prev as $obj) {
-                            $point = $obj::get_table();
-                            foreach($data as $stuff) {
-                                if($obj->id == $stuff[$point.'_id']) {
-                                    $obj->$class = new $class($stuff);
-                                }
-                            }
-                        }
-                    } else {
-                        foreach($prev as $obj) {
-                            $point = $obj::get_table();
-                            if($obj->id == $data[$point.'_id']) {
-                                $obj->$class = new $class($data);
+                $prev = $this->_relate($class, $data, $prev);
+            }
+        }
+        return $prev;
+    }
+
+
+    protected function _relate($class, $data, $base = false) {
+        if(!$base) {
+            $class->set_class_variable($data);
+            return $class;
+        } else {
+            if(is_array($base)) {
+                if(is_array($data)) {
+                    foreach($base as $obj) {
+                        $point = $obj::get_table();
+                        $pk = $obj::get_primary_key();
+                        foreach($data as $stuff) {
+                            if($obj->$pk == $stuff[$point.'_'.$pk]) {
+                                $obj->$class = new $class($stuff);
                             }
                         }
                     }
                 } else {
-                    if(is_array($data)) {
-                        foreach($data as $array) {
-                            $classes[] = new $class($array);
+                    foreach($base as $obj) {
+                        $point = $obj::get_table();
+                        $pk = $obj::get_primary_key();
+                        if($obj->$pk == $data[$point.'_'.$pk]) {
+                            $obj->$class = new $class($data);
                         }
-                    } else {
-                        $classes = new $class($data);
                     }
-                    $prev->$class = $classes;
-                    $prev = $prev->$class;
                 }
-            }
-        }
-        return $previous;
-    }
-
-    protected function _relate($class, $data, $first = false) {
-        $values = null;
-        if(is_array($data)) {
-            foreach($data as $id => $data) {
-                $values[$id] = new $class($data);
-            }
-        } else {
-            $values = new $class($data);
-        }
-        if($first) {
-            $this->$class = $values;
-            return $this;
-        }
-        $key = false;
-        foreach($this->relates as $old => $new) {
-            if(isset(self::$_current)) {
-                if(isset(self::$_current->$old)) {
-                    $key = $old;
-                    self::$_current = self::$_current->$old;
+            } else {
+                if(is_array($data)) {
+                    foreach($data as $array) {
+                        $classes[] = new $class($array);
+                    }
+                } else {
+                    $classes = new $class($data);
                 }
-                if(isset(self::$_current->$old->$new)) {
-                    $key = $new;
-                    self::$_current = self::$_current->$old->$new;
-                }
-            } else if(isset($this->$old)) {
-                $key = $old;
-                self::$_current = $this->$old;
-            }
-            if(isset($this->$old->$new)) {
-                $key = $new;
-                self::$_current = $this->$old->$new;
+                $base->$class = $classes;
+                $base = $base->$class;
             }
         }
-        if(!isset(self::$_current)) {
-            $key = $old;
-            self::$_current = $this;
-        }
-        if(is_array(self::$_current)) {
-
-        }
-        return self::$_current->$class = $values;
+        return $base;
     }
 
     public function _pre_load() {
