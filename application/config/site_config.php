@@ -29,7 +29,8 @@ $config = array(
             'charset' => 'utf8',
             'collate' => 'utf8_general_ci',
             'auto_connect' => true,
-	        'active_record' => true
+	        'active_record' => true,
+            'ARDO' => true
         )
     ),
     'compress_output' => false,
