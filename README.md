@@ -12,6 +12,19 @@ Feel free to ask. <br />
 ***********************************************<br />
 </div>
 
+##Installation and Configuraion
+If you are looking for installation and configuration instructions you should head on over
+to the <a href="http://gihub.com/danwguy/OOF/wiki">wiki</a> pages, everything you need is there.
+For a fast and dirty version, here you go.
+
+First step is to pull the repo to your server root directory. Next you are going to want to
+open up the /application/config/site_config.php and update the information in the config array
+to match your site setting, i.e. the database configuration and your prefered output method.
+After that stuff is done, you are going to want to create a new database in your MySQL installation, named
+the same as what you put into the config, and load in the framework.sql file, to setup the base tables for the
+framework and the sample sites info. Once all that is done... go forth and build.
+
+##Quick overview
 A PHP framework that strives to make programming very complex applications a breeze. 
 It is highly modeled after CodeIgniter. The main differences being with this framework 
 you are always dealing with object regardless where you are in the code, the relational
