@@ -313,6 +313,31 @@ Full-Width Styles
   text-shadow: #111 0px 0px 10px;
 }
 
+#links {
+    position: absolute;
+    width: 300px;
+    z-index: 10;
+    bottom: -25px;
+    right: 260px;
+    height: 70px;
+    line-height: 70px;
+}
+
+#links a {
+    margin-left: 15px;
+    color: #919191 !important;
+}
+
+#links a,
+#links a:visited {
+    text-decoration: none;
+}
+
+#links a:hover {
+    text-decoration: none;
+    color: #007edf !important;
+}
+
 #downloads {
   position: absolute;
   width: 210px;
