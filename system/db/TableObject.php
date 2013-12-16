@@ -28,6 +28,7 @@
         protected $_page;
         protected $_limit;
 	    protected $_cache;
+        protected $_ardo;
 
         /*
         * HOOKS
@@ -60,9 +61,7 @@
 
         //Takes as an argument either an id number to retrieve from the db, an array of field values, or another object to clone.
         public function __construct() {
-	        $this->config = Loader::load('Config', 'core');
-	        $this->inflect = Loader::load('Inflection', 'core');
-	        $this->_cache = new Cache(array('adapter' => 'FileCache'));
+            $this->_initialize_class_objects();
             $class = get_class($this);
             $this->before_construction();
             if(func_num_args() == 1) {
@@ -87,6 +86,16 @@
                     $this->$key = $value;
                 }
             }
+        }
+
+        protected function _initialize_class_objects() {
+            $this->config = Loader::load('Config', 'core');
+            $this->inflect = Loader::load('Inflection', 'core');
+            $this->_cache = new Cache(array('adapter' => 'FileCache'));
+            $d_to_the_b_c = $this->config->item('database');
+            $active = $d_to_the_b_c['active'];
+            $db = $d_to_the_b_c[$active];
+            $this->_ardo = (isset($db['ARDO']) && $db['ARDO']) ? new ARDO() : false;
         }
 
         public function insert(array $data) {
@@ -143,6 +152,9 @@
         //either matches a scalar on primary_key = id or takes an assoc array where each key value pair is evaluated for equality
         public function retrieve($id_or_conditions) {
             $this->before_retrieval();
+            if($this->_ardo && count($this->relates) > 0) {
+                return $this->_ardo->retrieve($id_or_conditions);
+            }
             $columns = $this->get_column_list();
             $sql = "SELECT ".implode(", ", $columns)." FROM ".static::get_table()." WHERE ";
             if (is_array($id_or_conditions)) {

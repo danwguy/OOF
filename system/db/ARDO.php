@@ -2,7 +2,6 @@
 
 class ARDO extends TableObject {
 
-    public $relates = array();
     public static $loaded = array();
     protected static $_current;
 
