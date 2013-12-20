@@ -22,7 +22,7 @@ class Output {
             include(APP_PATH.'config/mime_types.php');
         }
         $this->_mime_type = $mimes;
-        $this->exception = Loader::load('Exceptions');
+        $this->exception = Loader::load('CustomException');
     }
 
     public function get_output() {

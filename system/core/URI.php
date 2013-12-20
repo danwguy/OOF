@@ -5,7 +5,7 @@
 	 * @method static URI get_instance() Returns the URI class
 	 */
 
-	class URI extends Singleton {
+	class URI  {
 
 
 		public $keyval;
@@ -15,8 +15,8 @@
 
 		protected $config;
 
-		public function construct() {
-			$this->config = Config::get_instance();
+		public function __construct() {
+			$this->config = Loader::load('Config');
 			$this->fetch_uri();
 		}
 

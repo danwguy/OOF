@@ -1,7 +1,7 @@
 <?php
 
 
-    define('OOF_VERSION', '1.0b');
+    define('OOF_VERSION', '0.9b');
     define('DEVELOPMENT_ENVIRONMENT', true);
 
     if (defined('DEVELOPMENT_ENVIRONMENT') && DEVELOPMENT_ENVIRONMENT) {
@@ -34,10 +34,10 @@
         $AUT = new Autoload();
     }
 
+$AUT->register();
+//$handler = Loader::load('CustomException');
 
-    $AUT->register();
-
-    set_error_handler('Exceptions::handleException');
+set_error_handler('CustomException::handleException');
 
     $bm = Loader::load('Benchmark');
     $bm->add('total_execution_time_start');

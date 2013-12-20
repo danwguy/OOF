@@ -5,7 +5,7 @@
 	 * @method static Config get_instance() Returns the Config class
 	 */
 
-	class Config extends Singleton {
+	class Config {
 
 
 		public $return = '';
@@ -20,7 +20,7 @@
 
 		const FILENAME = 'site_config.php';
 
-		public function construct() {
+		public function __construct() {
 			if(empty($this->items)) {
 				$this->_read_config();
 			}

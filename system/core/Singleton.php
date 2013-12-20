@@ -3,11 +3,16 @@
 
 abstract class Singleton {
 
+    public $config;
+
     public static $instances = array();
 
     abstract function construct();
 
     protected final function __construct() {
+//        if(!isset($this->config)) {
+//            $this->config = Loader::load('Config');
+//        }
         $this->construct();
     }
 

@@ -11,6 +11,7 @@
         public $duplicate_key;
 	    public $config;
 	    public $inflect;
+        public $relates = array();
 
         protected $_dbHandle;
         protected $_result;
@@ -61,7 +62,13 @@
 
         //Takes as an argument either an id number to retrieve from the db, an array of field values, or another object to clone.
         public function __construct() {
-            $this->_initialize_class_objects();
+	        $this->config = Loader::load('Config', 'core');
+	        $this->inflect = Loader::load('Inflection', 'core');
+	        $this->_cache = new Cache(array('adapter' => 'FileCache'));
+            $d_to_the_b = $this->config->item('database');
+            $active = $d_to_the_b['active'];
+            $db = $d_to_the_b[$active];
+            $this->_ardo = (isset($db['ARDO']) && $db['ARDO']) ? new ARDO() : false;
             $class = get_class($this);
             $this->before_construction();
             if(func_num_args() == 1) {
@@ -86,16 +93,6 @@
                     $this->$key = $value;
                 }
             }
-        }
-
-        protected function _initialize_class_objects() {
-            $this->config = Loader::load('Config', 'core');
-            $this->inflect = Loader::load('Inflection', 'core');
-            $this->_cache = new Cache(array('adapter' => 'FileCache'));
-            $d_to_the_b_c = $this->config->item('database');
-            $active = $d_to_the_b_c['active'];
-            $db = $d_to_the_b_c[$active];
-            $this->_ardo = (isset($db['ARDO']) && $db['ARDO']) ? new ARDO() : false;
         }
 
         public function insert(array $data) {
@@ -597,6 +594,19 @@
             return static::retrieve_object_ids("WHERE mode='live' ORDER BY id");
         }
 
+        public static function __callStatic($name, $arguments) {
+            //pass through to get_related
+            return static::get_related($name, $arguments);
+        }
+
+        public function __call($name, $arguments) {
+            $class = get_called_class();
+            $pk = $class::get_primary_key();
+            //call get_related in the context of the calling class, with the
+            //calling class's instance uses as the primary key for the argument.
+            return $class::get_related($name, array($this->$pk));
+        }
+
         //this actually does the work when the other two above are called
         public static function get_related($name, $arguments) {
             $name = strtolower($name); //convert the function call name into all lowercase for easier regex matching
@@ -607,7 +617,7 @@
                 $target_class = str_replace("_", " ", $matches[1]);
                 $target_class = ucwords($target_class);
                 $target_class = str_replace(" ", "", $target_class);
-                $target_class = "\\FluxCRM\\Models\\$target_class";
+                $target_class = $target_class;
 
                 //if the class is an -ies pluralization, unpluralize back to -y
                 if (isset($matches[2]) && $matches[2] == "ies") {

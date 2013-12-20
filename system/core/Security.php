@@ -1,7 +1,7 @@
 <?php
 
 
-class Security extends Singleton {
+class Security  {
 
     private $config;
 
@@ -30,8 +30,8 @@ class Security extends Singleton {
         "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?"
     );
 
-    public function construct() {
-        $this->config = Config::get_instance();
+    public function __construct() {
+        $this->config = Loader::load('Config');
         if($this->config->item('csrf', 'protection')) {
             foreach(array('csrf_expire', 'csrf_token_name', 'csrf_cookie_name') as $key) {
                 if(false !== ($val = $this->config->item($key))) {

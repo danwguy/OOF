@@ -1,7 +1,7 @@
 <?php
 
 
-class Exceptions {
+class CustomException extends Exception {
 
 	public $action;
 	public $severity;
@@ -127,6 +127,53 @@ class Exceptions {
 		);
 	}
 
+    public function __toString() {
+        return CustomException::to_string($this->getMessage());
+    }
+
+    public static function to_string($string, $backtrace = null) {
+        if (!$backtrace) {
+            $backtrace = debug_backtrace(false);
+        }
+        $backtrace_strings = array();
+        foreach ($backtrace as $key => $entry) {
+            $backtrace_string = str_pad($key, 2, " ", STR_PAD_LEFT).": ";
+            if(isset($entry['file'])) {
+                $backtrace_string .= $entry['file'];
+            }
+            $backtrace_string .= (isset($entry['line'])) ? $entry['line'] : '';
+            $backtrace_string .= "\r\n";
+            $backtrace_string .= "      ".(isset($entry['class']) ? $entry['class'] : "").(isset($entry['type']) ? $entry['type'] : "")."{$entry['function']}(";
+            $backtrace_string .= implode(", ", array_map(function ($arg) {
+                $max_string_length = 80;
+                $arg_string = preg_replace("/\s+/", " ", LanguageUtil::to_string($arg));
+                if (strlen($arg_string) > $max_string_length) {
+                    return substr($arg_string, 0, floor($max_string_length*3/5))."...".(substr($arg_string, -floor($max_string_length*2/5)));
+                } else {
+                    return $arg_string;
+                }
+            }, $entry{'args'}));
+            $backtrace_string .= ")";
+            $backtrace_strings[] = $backtrace_string;
+        }
+        $out = "<pre class='prettyprint'>";
+        $out .= "<div class='backtrace'>";
+        $out .= "\r\n";
+        $backtrace_block = "<div class='backtrace-block'>";
+        $backtrace_block .= implode("</div>". "\r\n" . "<div class='backtrace-block'>", $backtrace_strings);
+        $backtrace_block = substr($backtrace_block, 0, -23);
+        $time = new DateTime();
+        $format_time = $time->format("Y-m-d H:i:s T");
+        $out .= "\r\n"."<div class='backtrace-timestamp'>Timestamp: ".$format_time."</div>";
+        $out .= "\r\n"."<div class='backtrace-block-wrapper'>
+                    <div class='backtrace-block-title'>Backtrace:</div>".
+            $backtrace_block.
+            "</div>"."\r\n";
+        $out .= "<div class='backtrace-final-string'>".$string."</div>"."\r\n"."</div>";
+        $out .= "</pre>";
+        return $out;
+    }
+
 	private function _show_error($heading, $message, $template = 'general_errors', $status = 500) {
 		$this->set_status_header($status);
 		$message = '<p>'.implode('</p><p>', (!is_array($message)) ? array($message) : $message).'</p>';
@@ -135,6 +182,7 @@ class Exceptions {
 		}
 		ob_start();
 		include(APP_PATH.'errors/'.$template.'.php');
+        $trace = self::to_string($message);
 		$buffer = ob_get_contents();
 		ob_end_clean();
 		return $buffer;
@@ -151,7 +199,8 @@ class Exceptions {
 			ob_end_flush();
 		}
 		ob_start();
-		include(APP_PATH.'errors/error_php.php');
+        $trace = CustomException::to_string($message, false);
+        include(APP_PATH.'errors/error_php.php');
 		$buffer = ob_get_contents();
 		ob_end_clean();
 		echo $buffer;
@@ -161,7 +210,7 @@ class Exceptions {
         if($severity == E_STRICT) {
             return;
         }
-        $me = Loader::load('Exceptions');
+        $me = Loader::load('CustomException');
         if(($severity & error_reporting()) == $severity) {
             $me->php_error($severity, $message, $file_path, $line);
         }

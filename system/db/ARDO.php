@@ -1,6 +1,6 @@
 <?php
 
-class ARDO extends TableObject {
+class ARDO {
 
     public static $loaded = array();
     protected static $_current;

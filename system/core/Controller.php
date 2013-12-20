@@ -40,13 +40,13 @@
         }
 
         public static function show_error($message, $code = 500, $header = 'An Error Occurred') {
-            $error = Loader::load('Exceptions', 'core');
+            $error = Loader::load('CustomException');
             echo $error->error($message, $header, 'general_errors', $code);
             exit();
         }
 
         public static function show_404($page = null, $log = false) {
-            $error = Loader::load('Exceptions', 'core');
+            $error = Loader::load('CustomException');
             echo $error->show_404($page, $log);
             exit;
         }
