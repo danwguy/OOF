@@ -14,7 +14,7 @@ Feel free to ask. <br />
 
 ##Installation and Configuraion
 If you are looking for installation and configuration instructions you should head on over
-to the <a href="http://gihub.com/danwguy/OOF/wiki">wiki</a> pages, everything you need is there.
+to the <a href="http://github.com/danwguy/OOF/wiki">wiki</a> pages, everything you need is there.
 For a fast and dirty version, here you go.
 
 First step is to pull the repo to your server root directory. Next you are going to want to
@@ -34,12 +34,12 @@ interactions. There are autoloaders that allow you to never worry about using re
 else, there are multiple hooks throughout the entire framework allowing you to completely customize
 the way the framework runs and handles object so you get to interact and code exactly how you want to
 not how the framework tells you to, and there are tons of magic goodies throughout making extremely
-complex relationships a breeze with functions like get_related, where Foo::get_related('Bar'); would
+complex relationships a breeze with functions like get _ related, where Foo::get_related('Bar'); would
 give you mapped out objects of related Bars that Foo needs, as well as a new Database interaction model
 I call ARDO, or Automagic Relational Database Objects. A new way of making the most complex relationships
 easily built and configured with a single call and zero extra work to the coder. Quick example is in your
 class you would grab one of the many hooks before_construction and tell it what the related object is,
-in Car objects before_construction method just write $this->relates[] = array('Car' => 'Tire');
+in Car objects before_construction method just write $this->relates['Car'] = 'Tire';
 and poof when you retrieve the Car object from the database it will automagically include the related
 Tire object. Another helpful feature is the retrieve method, calling $car = new Car(1); will
 give you the Car object from the database where the primary key = 1. Combine that with the ARDO
