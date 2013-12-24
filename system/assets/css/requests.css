@@ -37,7 +37,7 @@ body {
 }
 
 .header p {
-    margin-top: -50px;
+    margin-top: -20px;
 }
 
 .header-title {
@@ -45,6 +45,10 @@ body {
     font-weight: bolder;
     color : rgba(255, 99, 94, 0.70);
     line-height: 125px;
+}
+
+.title-sub {
+    margin-top: -50px;
 }
 
 .explanation {

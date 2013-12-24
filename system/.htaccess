@@ -2,10 +2,10 @@
     RewriteEngine on
 
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ ../public/index.php?url=$1 [PT,L]
+    RewriteRule ^(.*)$ index.php?error=non-existent&request=$1 [PT,L]
 
     RewriteCond %{REQUEST_FILENAME} (.*)\.php
-    RewriteRule ^(.*)$ index.php?request=$1 [PT,L]
+    RewriteRule ^(.*)$ index.php?error=script-access&request=$1 [PT,L]
 
 
 
