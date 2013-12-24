@@ -219,7 +219,7 @@ var IN_GLOBAL_SCOPE = false;
     skinUrls.push(LOADER_BASE_URL
         + '/skins/' + encodeURIComponent(skins[i]) + '.css');
   }
-  skinUrls.push(LOADER_BASE_URL + '/prettify.css');
+  skinUrls.push(LOADER_BASE_URL + '/prettify.css?skin=sunburst');
   loadStylesheetsFallingBack(skinUrls);
 
   var prettyPrint = (function () {
@@ -328,7 +328,7 @@ var IN_GLOBAL_SCOPE = false;
       var JAVA_KEYWORDS = [COMMON_KEYWORDS,
           "abstract,assert,boolean,byte,extends,final,finally,implements,import," +
           "instanceof,interface,null,native,package,strictfp,super,synchronized," +
-          "throws,transient"];
+          "throws,transient,echo,print"];
       var CSHARP_KEYWORDS = [JAVA_KEYWORDS,
           "as,base,by,checked,decimal,delegate,descending,dynamic,event," +
           "fixed,foreach,from,group,implicit,in,internal,into,is,let," +

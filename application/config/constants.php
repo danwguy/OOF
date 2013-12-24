@@ -14,7 +14,7 @@ define('PERMISSION_DIR_WRITE', 0777);
 	/*
 	 * These are for reading and writing files
 	 * all are appended with the b flag so that
-	 * none of the files are will be translated
+	 * none of the files will be translated
 	 * i.e. translating line endings from \n or \r
 	 * to \r\n
 	 */

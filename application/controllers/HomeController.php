@@ -19,6 +19,7 @@ class HomeController extends Controller {
 		    'content' => $content,
 		    'themes' => $themes
 	    );
+        echo $vars['non-existent'];
         $this->set($vars);
         $this->_template->render();
     }

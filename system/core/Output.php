@@ -146,6 +146,23 @@ class Output {
                 $output .= $OOF->profiler->run();
             }
         }
+        if(Debug::hasContent()) {
+            $debug_config = $cfg->item('debug');
+            $active_config = $debug_config[ENVIRONMENT];
+            if($active_config['show_debug']) {
+                $debug_content = Debug::getDebugContent();
+                if(preg_match("|</body>.*?</html>|is", $output)) {
+                    $output = preg_replace("|</body>.*?</html>|is", "", $output);
+                    $output .= $debug_content;
+                    $output .= Debug::getJscript(($active_config['start_minimized']) ? true : false);
+                    $output .= "</body></html>";
+                } else {
+                    $output .= Debug::getJscript(($active_config['start_minimized']) ? true : false);
+                    $output .= $debug_content;
+                }
+                Debug::$content = array();
+            }
+        }
         if(method_exists($OOF, '_output')) {
             $OOF->_output($output);
         } else {

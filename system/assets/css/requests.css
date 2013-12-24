@@ -1,0 +1,95 @@
+body {
+    background: url('../img/404-bg.jpg') repeat;
+    color: #bebebe;
+    font-family: "Helvetica Neue Light";
+}
+
+.wrapper {
+    width: 920px;
+    margin: 0 auto;
+    position: relative;
+}
+.head-img {
+    width: 440px;
+    height: 223px;
+    margin: 0 auto;
+}
+
+.box {
+    width: 100%;
+    /*background: #fff;*/
+    background: -moz-linear-gradient(left,  rgba(69,72,77,0) 0%, rgba(0,0,0,.8) 50%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(69,72,77,0)), color-stop(50%,rgba(0,0,0,.8)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  rgba(69,72,77,0) 0%,rgba(0,0,0,.8) 50%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  rgba(69,72,77,0) 0%,rgba(0,0,0,.8) 50%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  rgba(69,72,77,0) 0%,rgba(0,0,0,.8) 50%,rgba(0,0,0,0) 100%); /* IE10+ */
+    background: linear-gradient(to right,  rgba(69,72,77,0) 0%,rgba(0,0,0,.8) 50%,rgba(0,0,0,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0045484d', endColorstr='#00000000',GradientType=1 ); /* IE6-9 */
+    border-radius: 5px;
+    border:1px solid black;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .7);
+    margin-top: 25px;
+}
+
+.header {
+    height: 125px;
+    text-align: center;
+}
+
+.header p {
+    margin-top: -50px;
+}
+
+.header-title {
+    font-size: 32px;
+    font-weight: bolder;
+    color : rgba(255, 99, 94, 0.70);
+    line-height: 125px;
+}
+
+.explanation {
+    height: 250px;
+    text-align: center;
+}
+
+.reason {
+    padding: 10px;
+    font-weight: lighter;
+    font-family: Arial;
+    line-height: 125px;
+}
+
+.dynamic-reason {
+    padding: 10px;
+    font-weight: bolder;
+    line-height: 25px;
+}
+
+.footing {
+    height: 175px;
+    text-align: center;
+}
+
+.explanation p a,
+.explanation p a:link,
+.explanation p a:visited {
+    text-decoration: none;
+    font-size: 20px;
+    font-style: italic;
+    color: #fff;
+    font-weight: bolder;
+    transition: 1s;
+    -webkit-transition: 1s
+}
+
+.explanation p a:hover {
+    text-decoration: underline;
+    font-size: 20px;
+    color: #000;
+}
+
+.return-home {
+    width: 294px;
+    height: 186px;
+    margin: 20px auto;
+}

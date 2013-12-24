@@ -131,47 +131,71 @@ class CustomException extends Exception {
         return CustomException::to_string($this->getMessage());
     }
 
-    public static function to_string($string, $backtrace = null) {
+    public static function to_string($string, $backtrace = false) {
         if (!$backtrace) {
             $backtrace = debug_backtrace(false);
         }
         $backtrace_strings = array();
-        foreach ($backtrace as $key => $entry) {
-            $backtrace_string = str_pad($key, 2, " ", STR_PAD_LEFT).": ";
-            if(isset($entry['file'])) {
-                $backtrace_string .= $entry['file'];
+        if($backtrace) {
+            foreach($backtrace as $step => $entry) {
+                $backtrace_string = "<div class='step-number'>Step #".str_pad($step, 2, " ", STR_PAD_LEFT).":</div>";
+                $backtrace_string .= "\r\n";
+                $backtrace_string .= "<div class='step-content'>".(isset($entry['class']) ? $entry['class'] : "").(isset($entry['type']) ? $entry['type'] : "")."{$entry['function']}(";
+                $backtrace_string .= implode(", ", array_map(function ($arg) {
+                    $max_string_length = 80;
+                    $arg_string = preg_replace("/\s+/", " ", LanguageUtil::to_string($arg));
+                    if (strlen($arg_string) > $max_string_length) {
+                        return substr($arg_string, 0, floor($max_string_length*3/5))."... ".(substr($arg_string, -floor($max_string_length*2/5)));
+                    } else {
+                        return $arg_string;
+                    }
+                }, $entry{'args'}));
+                $backtrace_string .= ")";
+                $backtrace_string .= "\r\n";
+                $backtrace_string .= (isset($entry['line'])) ? "On line ".$entry['line'] : '';
+                $backtrace_string .= (isset($entry['file'])) ? " of file ".$entry['file'] : '';
+                $backtrace_string .= "</div>";
+                $backtrace_strings[] = $backtrace_string;
             }
-            $backtrace_string .= (isset($entry['line'])) ? $entry['line'] : '';
-            $backtrace_string .= "\r\n";
-            $backtrace_string .= "      ".(isset($entry['class']) ? $entry['class'] : "").(isset($entry['type']) ? $entry['type'] : "")."{$entry['function']}(";
-            $backtrace_string .= implode(", ", array_map(function ($arg) {
-                $max_string_length = 80;
-                $arg_string = preg_replace("/\s+/", " ", LanguageUtil::to_string($arg));
-                if (strlen($arg_string) > $max_string_length) {
-                    return substr($arg_string, 0, floor($max_string_length*3/5))."...".(substr($arg_string, -floor($max_string_length*2/5)));
-                } else {
-                    return $arg_string;
-                }
-            }, $entry{'args'}));
-            $backtrace_string .= ")";
-            $backtrace_strings[] = $backtrace_string;
         }
-        $out = "<pre class='prettyprint'>";
+        $out = "<pre>";
         $out .= "<div class='backtrace'>";
         $out .= "\r\n";
         $backtrace_block = "<div class='backtrace-block'>";
         $backtrace_block .= implode("</div>". "\r\n" . "<div class='backtrace-block'>", $backtrace_strings);
         $backtrace_block = substr($backtrace_block, 0, -23);
         $time = new DateTime();
-        $format_time = $time->format("Y-m-d H:i:s T");
+        $format_time = $time->format("G:iA F jS T");
         $out .= "\r\n"."<div class='backtrace-timestamp'>Timestamp: ".$format_time."</div>";
         $out .= "\r\n"."<div class='backtrace-block-wrapper'>
                     <div class='backtrace-block-title'>Backtrace:</div>".
             $backtrace_block.
             "</div>"."\r\n";
-        $out .= "<div class='backtrace-final-string'>".$string."</div>"."\r\n"."</div>";
+        $out .= "</div>";
         $out .= "</pre>";
         return $out;
+    }
+
+    protected function _get_file($path, $line) {
+        $lines = array();
+        if(file_exists(APP_PATH.'/'.$path)) {
+            $lines = file(APP_PATH.'/'.$path);
+        } else if(file_exists(SYS_PATH.'/'.$path)) {
+            $lines = file(APP_PATH.'/'.$path);
+        }
+        $ret = '';
+        $min_line = $line - 5;
+        $parts = explode("/", $path);
+        for($i = 0; $i <= 10; $i++) {
+            if(isset($lines[$min_line + $i])) {
+                if(($min_line + $i) == $line  - 1) {
+                    $ret .= "<span class='error-line'>".$lines[$min_line + $i]."</span>";
+                } else {
+                    $ret .= $lines[$min_line + $i];
+                }
+            }
+        }
+        return "<h4>".end($parts)."</h4><pre class='prettyprint linenums:".($min_line + 1)."'>".$ret."</pre>";
     }
 
 	private function _show_error($heading, $message, $template = 'general_errors', $status = 500) {
@@ -200,10 +224,12 @@ class CustomException extends Exception {
 		}
 		ob_start();
         $trace = CustomException::to_string($message, false);
+        $file_contents = $this->_get_file($path, $line);
         include(APP_PATH.'errors/error_php.php');
 		$buffer = ob_get_contents();
-		ob_end_clean();
-		echo $buffer;
+        ob_end_clean();
+        Debug::setContent($buffer, 'php_error');
+//		echo $buffer;
 	}
 
     public static function handleException($severity, $message, $file_path, $line) {
@@ -214,5 +240,6 @@ class CustomException extends Exception {
         if(($severity & error_reporting()) == $severity) {
             $me->php_error($severity, $message, $file_path, $line);
         }
+        return true;
     }
 }

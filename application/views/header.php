@@ -14,8 +14,7 @@
                  'animator',
                  'simon',
                  'popup',
-                 'prettify',
-                 'run_prettify'
+                 'prettify'
             )
         );
         echo $html->includeCss(

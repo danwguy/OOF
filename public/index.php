@@ -11,7 +11,7 @@ define('DS', DIRECTORY_SEPARATOR);
 	 * If none is found there the application will fall back to application/site_config.php
 	 * this way you don't have to change the directories but you can if you want to
 	 */
-	define('ENVIRONMENT', 'production');
+	define('ENVIRONMENT', 'development');
 
 	/*
 	 * This can be set to whatever you like and the system will load files from this dir

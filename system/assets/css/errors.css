@@ -1,0 +1,133 @@
+.error-line {
+    background: rgba(150, 2, 2, .35) !important;
+}
+
+.php-error-wrapper {
+    width: 900px;
+    margin: 0 auto;
+}
+
+.debug {
+    position: relative;
+    top: 100px;
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, .8);
+    border-top: 2px solid #ccc;
+    color: #bcbcbc;
+}
+
+pre {
+    background: black;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    position: relative;
+}
+
+.backtrace {
+    position: relative;
+    top: 5px;
+    width: 900px;
+}
+
+.backtrace-timestamp {
+    padding-left: 5px;
+}
+
+.backtrace-block-title {
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.backtrace-block {
+    padding: 5px;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+    width: 90%;
+    margin: 0 auto;
+    word-wrap: break-word;
+}
+
+.step-number {
+    position: relative;
+    left: 0;
+    top: 5px;
+}
+
+.step-content {
+    position: relative;
+    left: 15px;
+    top: 5px;
+}
+
+.php-file {
+    margin-top: 15px;
+}
+
+.animated {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Helvetica Neue", "Helvetica", arial, sans-serif;
+    font-size: 11px;
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+    min-width: 300px;
+    position: absolute;
+    left: -101px;
+}
+
+.cloud {
+    background: url('../img/dark.png') no-repeat;
+    overflow: hidden;
+    width: 276px;
+    min-height: 62px;
+    margin: auto;
+    text-align: center;
+    text-shadow: 0 -2px 2pc black;
+}
+
+#icon {
+    margin: 5px 40px 0 2px;
+    float: right;
+}
+
+#icon img {
+    width: 55px;
+    height: 48px;
+    display: block;
+}
+
+#title {
+    margin: 10px 3px 0 18px;
+    font-weight: bold;
+    width: 175px;
+    height: 14px;
+    overflow: hidden;
+    font-size: 12px;
+}
+
+#text {
+    margin: 0 0 0 18px;
+    height: 13px;
+    width: 175px;
+    overflow: hidden;
+    font-size: 10px;
+    font-style: italic;
+}
+
+#controls {
+    margin: 8px 0 0 18px;
+    font-size: 8px;
+    width: 100%;
+}
+
+.show-more {
+    float: left;
+    margin-left: 40px;
+    cursor: pointer;
+}
+
+.hide-all {
+    float: right;
+    margin-right: 40px;
+    cursor: pointer;
+}

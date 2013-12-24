@@ -3,7 +3,7 @@
 }
 
 .blue-wall {
-    background: url('../img/wallpaper_blue.jpg') no-repeat fixed;
+    background: url('../img/wallpaper_blue_small.jpg') repeat-x fixed;
 }
 
 .blur-wall {
@@ -15,7 +15,7 @@
 }
 
 .dark-wall {
-    background: url('../img/wallpaper_dark.png') no-repeat fixed;
+    background: url('../img/wallpaper_dark.jpg') no-repeat fixed;
 }
 
 

@@ -41,8 +41,17 @@ $config = array(
         'screen_output' => 'l \the jS \of F Y \at h:i:s a', //experimental this is not in use yet
         'db_storage' => 'Y-m-d H:i:s'
     ),
+    'debug' => array(
+        'production' => array(
+            'show_debug' => false,
+            'start_minimized' => false
+        ),
+        'development' => array(
+            'show_debug' => true,
+            'start_minimized' => true
+        )
+    ),
     'allowed_url_chars' => 'a-z 0-9~%.:_\-',
-	'allow_get' => false,
 	'xss_filter' => false,
 	'underscore_to_camel_case' => true,
 	'paginate_limit' => 5,
