@@ -31,8 +31,6 @@
             'application/helpers'
         );
 
-        protected $_config;
-
         protected $_registered = false;
 
         protected $_extra = array();
@@ -78,8 +76,8 @@
 		        if(in_array(LanguageUtil::underscores_to_camel_case($class), $this->_exclusions)) {
 			        $name = LanguageUtil::underscores_to_camel_case($class);
 			        $filename = $name.'.php';
-		        } else if(isset($this->_config)) {
-			        if($this->_config->item('underscore_to_camel_case')) {
+		        } else if(class_exists('Config')) {
+			        if(Config::getItem('underscore_to_camel_case')) {
 				        $name = LanguageUtil::underscores_to_camel_case($class);
 				        $filename = $name.'.php';
 			        } else {
@@ -106,7 +104,6 @@
             if(!$this->_registered) {
                 spl_autoload_register("AutoLoad::autoload");
                 $this->_registered = true;
-	            $this->_config = Loader::load('Config', 'core');
             }
         }
     }

@@ -16,10 +16,10 @@ class Input extends Singleton {
     protected $headers = array();
 
     public function construct() {
-        $this->config = Loader::load('Config', 'core');
-        $this->_allow_get = ($this->config->item('allow_get')) ? true : false;
-        $this->_xss_filter = ($this->config->item('xss_filter')) ? true : false;
-        $this->_csrf_protection = ($this->config->item('csrf', 'protection')) ? true : false;
+
+        $this->_allow_get = (Config::getItem('allow_get') === true);
+        $this->_xss_filter = (Config::getItem('xss_filter') === true);
+        $this->_csrf_protection = (Config::getItem('csrf', 'protection') === true);
 
         $this->security = Loader::load('Security', 'core');
 

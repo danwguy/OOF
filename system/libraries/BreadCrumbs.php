@@ -33,6 +33,19 @@ class BreadCrumbs extends Singleton {
         return $this->trail;
     }
 
+    public function unshift($item) {
+        $parts = explode("->", $this->trail);
+        array_unshift($item, $parts);
+        return $this->trail = implode("->", $parts);
+    }
+
+    public function pop($return_popped = true) {
+        $parts = explode("->", $this->trail);
+        $end = array_pop($parts);
+        $this->trail = implode("->", $parts);
+        return ($return_popped) ? $end : $this->trail;
+    }
+
     public function build(array $data = array()) {
         $this->trail = self::HOME;
         if($data && !empty($data)) {

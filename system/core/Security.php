@@ -31,15 +31,14 @@ class Security  {
     );
 
     public function __construct() {
-        $this->config = Loader::load('Config');
-        if($this->config->item('csrf', 'protection')) {
+        if(Config::getItem('csrf', 'protection')) {
             foreach(array('csrf_expire', 'csrf_token_name', 'csrf_cookie_name') as $key) {
-                if(false !== ($val = $this->config->item($key))) {
+                if(false !== ($val = Config::getItem($key))) {
                     $this->{'_'.$key} = $val;
                 }
             }
-            if($this->config->item('cookie', 'prefix')) {
-                $this->_csrf_cookie_name = $this->config->item('cookie', 'prefix').$this->_csrf_cookie_name;
+            if(Config::getItem('cookie', 'prefix')) {
+                $this->_csrf_cookie_name = Config::getItem('cookie', 'prefix').$this->_csrf_cookie_name;
             }
 
             $this->_csrf_set_hash();

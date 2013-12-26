@@ -9,17 +9,29 @@
         private $_log_to_db = false;
         private $_log_to_files = false;
         private $logging_dir = null;
+        private $_enabled;
+        private $_date_format = 'Y-m-d H:i:s';
+        private $_level = 0;
+
+        protected $_levels = array('ERROR' => 1, 'DEBUG' => 2, 'INFO' => 3, 'ALL' => 4);
 
 
         public function construct() {
-            $conf = Loader::load('Config');
-            $this->_config = $conf->item('logging');
+            $this->_config = Config::getItem('logging');
             $this->_log_to_db = (isset($this->_config['log_to_database']) && $this->_config['log_to_database'])
                 ? true
                 : false;
             $this->_log_to_files = (isset($this->_config['log_to_files']) && $this->_config['log_to_files'])
                 ? true
                 : false;
+            $this->_enabled = (isset($this->_config['enabled'])) ? $this->_config['enabled'] : false;
+            $this->_level = (isset($this->_config['logging_level']) && is_numeric($this->_config['logging_level']))
+                ? $this->_config['logging_level']
+                : 0;
+            $date_format = Config::getItem('date_formatting', 'log_file');
+            $this->_date_format = ($date_format)
+                ? Config::getItem('date_formatting', 'log_file')
+                : $this->_date_format;
             $this->_setup_structure();
         }
 
@@ -91,6 +103,30 @@
             if($this->_log_to_files) {
                 $this->_file_log($string, ($file) ? $file : $this->log_files[0], $log_backtrace);
             }
+        }
+
+        public function log_exception($level = 'error', $msg, $php_error = false) {
+            if(!$this->enabled) {
+                return false;
+            }
+            $level = strtoupper($level);
+            if(!isset($this->_levels[$level]) || ($this->_levels[$level] > $this->_level)) {
+                return false;
+            }
+
+            $path = $this->logging_dir.'/'.$level.'_log-'.date('Y-m-d').'.log';
+            if(!$fp = @fopen($path, FILE_WRITE_END_CREATE)) {
+                return false;
+            }
+            $message = $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_format). ' --> '.$msg."\n";
+
+            flock($fp, LOCK_EX);
+            fwrite($fp, $message);
+            flock($fp, LOCK_UN);
+            fclose($fp);
+
+            @chmod($path, PERMISSION_FILE_WRITE);
+            return true;
         }
 
         protected function _file_log($string, $file, $log_backtrace) {

@@ -30,17 +30,20 @@ class Debug {
         return (count(self::$content) > 0);
     }
 
-    public static function getDebugContent() {
+    public static function getDebugContent($return_html = true) {
+        $content = array();
         if(count(self::$content) > 0) {
             $out = self::DIV_START;
             foreach(self::$content as $k => $data) {
+                $content[$k] = $data;
                 $out .= "\r\n"."      ";
                 $out .= (is_array($data)) ? implode("\r\n"."      ", $data) : $data;
             }
             $out .= "\r\n" . self::DIV_END;
         } else {
             $out = '';
-        }return $out;
+        }
+        return ($return_html) ? $out : $content;
     }
 
     public static function getJscript($minimize = true) {
@@ -51,14 +54,6 @@ class Debug {
             : "$(document).ready(function() { jsDebug.startMinimized = false; jsDebug.init(); });";
         $str .= "</script>";
         return $str;
-    }
-
-    public static function getMinimizeJscript() {
-        return '<script type="text/javascript">
-                    $(document).ready(function() {
-                        jsDebug.minimize();
-                    });
-                </script>';
     }
 
 } 

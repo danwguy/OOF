@@ -6,7 +6,7 @@
 
         public $renderHeader = true;
         public $render = true;
-        public $noModel = false;
+        public $noModel;
         protected $_controller;
         protected $_action;
         protected $_template;
@@ -41,7 +41,7 @@
 
         public static function show_error($message, $code = 500, $header = 'An Error Occurred') {
             $error = Loader::load('CustomException');
-            echo $error->error($message, $header, 'general_errors', $code);
+            echo $error->error($message, $header, 'error_general', $code);
             exit();
         }
 

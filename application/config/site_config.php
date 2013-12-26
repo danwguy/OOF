@@ -103,12 +103,34 @@ $config = array(
         'convert_to_local' => true
     ),
     'logging' => array(
+        'enable' => true, //turn on logging = true, turn off logging = false
         'path' => 'tmp/logs', //relative to root
-        'log_sql' => true,
-        'log_all_requests' => true,
-        'log_to_database' => false, //if set to true must define table here also...
+        'log_sql' => false, //should we log all sql queries that are tun?
+        'log_all_requests' => false, //should we log all page/class requests?
+        'log_to_database' => false, //if logging is enabled should we log to db? if set to true must define table too...
         //'db_log_table' => 'logs'
-        'log_to_files' => true,
+        'log_to_files' => true, //if logging is enabled are we logging to files?
+        /*
+         * what should we log?
+         * 0 = No error logging;
+         *          ^Even if logging is enabled
+         * 1 = Error messages;
+         *          ^including php errors
+         * 2 = Debug logging;
+         *          ^pretty much everything going on will be logged to debug.log. Careful this can get real big
+         *           real fast. If you enable this level you should check and clear out your debug.log file at
+         *           least once a day
+         * 3 = Information messages;
+         *          ^Information about what is going on, like 2 except no errors, or debug messages, just info
+         * 4 = All messages;
+         *          ^Log ALL the things! this will log absolutely everything. You thought debug filled up fast, go for it
+         *           enable this one, those files are going to be huge, but you'll get a lot of info. You should go
+         *           through and clean out the log files a few times a day
+         *
+         * If you are running this live I would recommend either 0 or 1. For a dev site I would still recommend keeping
+         * this relatively low and enable the debug output instead, but it's your call.
+         */
+        'logging_level' => 1,
         'log_files' => array(
             'debug.log',
             'error.log',

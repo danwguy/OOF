@@ -110,7 +110,7 @@ class CustomException extends Exception {
 		}
 	}
 
-	public function error($heading, $message, $template = 'general_errors', $status = 500) {
+	public function error($heading, $message, $template = 'error_general', $status = 500) {
 		return $this->_show_error($heading, $message, $template, $status);
 	}
 
@@ -120,7 +120,7 @@ class CustomException extends Exception {
 
 	private function _log_exception($severity, $message, $path, $line) {
 		$severity = (!isset($this->levels[$severity])) ? $severity : $this->levels[$severity];
-		$this->logger->log(
+		$this->logger->log_exception(
 			'error',
 			'Severity: '.$severity.' :-> '.$message.' in: '.$path.' on: '.$line,
 			true
@@ -198,7 +198,7 @@ class CustomException extends Exception {
         return "<h4>".end($parts)."</h4><pre class='prettyprint linenums:".($min_line + 1)."'>".$ret."</pre>";
     }
 
-	private function _show_error($heading, $message, $template = 'general_errors', $status = 500) {
+	private function _show_error($heading, $message, $template = 'error_general', $status = 500) {
 		$this->set_status_header($status);
 		$message = '<p>'.implode('</p><p>', (!is_array($message)) ? array($message) : $message).'</p>';
 		if(ob_get_level() > $this->ob_level + 1) {
@@ -240,6 +240,10 @@ class CustomException extends Exception {
         if(($severity & error_reporting()) == $severity) {
             $me->php_error($severity, $message, $file_path, $line);
         }
+        if(Config::getItem('logging', 'logging_level') == 0) {
+            return;
+        }
+        $me->_log_exception($severity, $message, $file_path, $line);
         return true;
     }
 }

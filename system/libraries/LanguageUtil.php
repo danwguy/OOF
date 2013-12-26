@@ -8,6 +8,8 @@
         const TITLE_CASE_IGNORE = "a an the and but or for nor so yet about above across after against along amid among around as at before behind below beneath beside besides between beyond but by down during except for from in inside into like minus near of off on onto outside over past per plus since than through to toward towards under unlike until up upon via with within without";
         const DIRTY_WORDS = "fuck bitch ass cunt slut whore fucking asshole bitches cunts sluts whores";
 
+        public static $dw = array();
+
         public static function get_indefinite_article($noun) {
             if (LanguageUtil::is_valid_string($noun)) {
                 if (in_array($noun[0], str_split(LanguageUtil::VOWELS))) {
@@ -87,18 +89,21 @@
 
         public static function censor($string, $disallow = null, $replace = '*', $append = false) {
             if(!$disallow) {
-                $disallow = explode(' ', self::DIRTY_WORDS);
+                $disallow = (self::$dw) ? self::$dw : explode(' ', self::DIRTY_WORDS);
             } else {
                 if($append) {
-                    $not_allowed = explode(" ", self::DIRTY_WORDS);
+                    $not_allowed = (self::$dw) ? self::$dw : explode(" ", self::DIRTY_WORDS);
                     if(!is_array($disallow)) {
                         $disallow = (array) $disallow;
                     }
-                    foreach(not_allowed as $wrd) {
-                        $disallow[] = $wrd;
-                    }
+                    $disallow = array_merge($disallow, $not_allowed);
+//                    foreach($not_allowed as $wrd) {
+//                        $disallow[] = $wrd;
+//                    }
                 }
             }
+            $with_array = array_fill(0, sizeof($disallow), "*");
+
             foreach($disallow as $word) {
                 if(preg_match("/".$word."/i", $string)) {
                     $string = preg_replace("/".$word."/i", str_repeat($replace, strlen($word)), $string);
