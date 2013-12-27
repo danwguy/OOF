@@ -1,6 +1,7 @@
 <?php
 
 
-class DB extends DBDriver {
+    class DB extends DBDriver {
 
-}
+
+    }

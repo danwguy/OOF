@@ -14,19 +14,19 @@
 
         public function __construct($controller, $action = null) {
             $this->load = Loader::load('Loader', 'core');
-            foreach ($this->load->is_loaded() as $name => $obj) {
+            foreach($this->load->is_loaded() as $name => $obj) {
                 $obj_name        = strtolower($name);
                 $this->$obj_name = Loader::load($name);
             }
 
             $this->load->init();
-            if (is_array($controller)) {
+            if(is_array($controller)) {
                 $action     = $controller[1];
                 $controller = $controller[0];
             }
             $this->_controller = ucfirst($controller);
             $this->_action     = $action;
-            if (!$this->noModel) {
+            if(!$this->noModel) {
                 $model_parts  = explode('Controller', $controller);
                 $model        = $model_parts[0];
                 $model        = ucfirst($this->inflection->singularize($model));
@@ -52,14 +52,14 @@
         }
 
         public function set($name, $value = null) {
-            if ($value && is_string($name)) {
+            if($value && is_string($name)) {
                 $vars = array($name => $value);
             }
-            if (is_array($name)) {
+            if(is_array($name)) {
                 $vars = $name;
             }
             $this->load->vars($vars);
-            if ($this->config->item('use_template')) {
+            if($this->config->item('use_template')) {
                 $this->_template->set($vars);
             }
         }
@@ -69,28 +69,28 @@
         }
 
         public function download($file, $data) {
-            if (!$file || !$data) {
+            if(!$file || !$data) {
                 return false;
             }
-            if (false === strpos($file, '.')) {
+            if(false === strpos($file, '.')) {
                 return false;
             }
 
             $ex        = explode('.', $file);
             $extension = end($ex);
 
-            if (defined('ENVIRONMENT') && file_exists(APP_PATH . 'config/' . ENVIRONMANT . '/mime_types.php')) {
+            if(defined('ENVIRONMENT') && file_exists(APP_PATH . 'config/' . ENVIRONMANT . '/mime_types.php')) {
                 include(APP_PATH . 'config/' . ENVIRONMENT . '/mime_types.php');
-            } else if (file_exists(APP_PATH . 'config/mime_types.php')) {
+            } else if(file_exists(APP_PATH . 'config/mime_types.php')) {
                 include(APP_PATH . 'config/mime_types.php');
             }
-            if (!isset($mimes[$extension])) {
+            if(!isset($mimes[$extension])) {
                 $mime = 'application/octet-stream';
             } else {
                 $mime = (is_array($mimes[$extension])) ? $mimes[$extension][0] : $mimes[$extension];
             }
 
-            if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false) {
+            if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false) {
                 header('Content-type: "' . $mime . '"');
                 header('Content-Disposition: attachment; filename="' . $file . '"');
                 header('Expires: 0');

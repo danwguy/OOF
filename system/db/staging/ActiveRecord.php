@@ -1,5 +1,6 @@
 <?php
 
-class DB extends DBActive_record {
+    class DB extends DBActive_record {
 
-}
+
+    }

@@ -17,4 +17,4 @@
     $autoload = array();
 
 //$autoload['load_paths'] = array('application/widgets');
-$autoload['exclusions'] = array('TipsTricks');
+    $autoload['exclusions'] = array('TipsTricks');

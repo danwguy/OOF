@@ -81,11 +81,11 @@
             'equipment'
         );
 
-        public function __construct(){
+        public function __construct() {
             $this->_init();
         }
 
-        public function pluralize($string){
+        public function pluralize($string) {
 
             if(in_array(strtolower($string), $this->_uncountable)) {
                 return $string;
@@ -107,7 +107,7 @@
             return $string;
         }
 
-        public function singularize($string){
+        public function singularize($string) {
 
             if(in_array(strtolower($string), $this->_uncountable)) {
                 return $string;
@@ -132,7 +132,7 @@
             return $string;
         }
 
-        public function pluralize_if($count, $string){
+        public function pluralize_if($count, $string) {
             if($count == 1) {
                 return "1 $string";
             } else {
@@ -140,7 +140,7 @@
             }
         }
 
-        protected function _init(){
+        protected function _init() {
             if(defined('ENVIRONMENT') && is_file(APP_PATH . 'config/' . ENVIRONMENT . '/inflection.php')) {
                 include(APP_PATH . 'config/' . ENVIRONMENT . '/inflection.php');
             } else if(is_file(APP_PATH . 'config/inflection.php')) {

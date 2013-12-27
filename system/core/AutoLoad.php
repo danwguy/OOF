@@ -51,8 +51,8 @@
         public function add(array $data = array()) {
             if(!empty($data)) {
                 foreach(array('load_paths', 'exclusions') as $type) {
-                    $temp = array();
-                    $class_type = "_".$type;
+                    $temp       = array();
+                    $class_type = "_" . $type;
                     if(isset($data[$type])) {
                         foreach($data[$type] as $v) {
                             if(!in_array($v, $this->$class_type)) {
@@ -70,33 +70,34 @@
         }
 
         public function autoload($class) {
-		        $name = null;
-	        $filename = null;
-	        if(class_exists('LanguageUtil')) {
-		        if(in_array(LanguageUtil::underscores_to_camel_case($class), $this->_exclusions)) {
-			        $name = LanguageUtil::underscores_to_camel_case($class);
-			        $filename = $name.'.php';
-		        } else if(class_exists('Config')) {
-			        if(Config::getItem('underscore_to_camel_case')) {
-				        $name = LanguageUtil::underscores_to_camel_case($class);
-				        $filename = $name.'.php';
-			        } else {
-				        $name = $class;
-				        $filename = $name.'.php';
-			        }
-		        }
-	        }
-	        if(!$name) {
-		        $name = $class;
-	        }
-	        if(!$filename) {
-		        $filename = $name.'.php';
-	        }
-		        $folder = $this->_load_paths;
+            $name     = null;
+            $filename = null;
+            if(class_exists('LanguageUtil')) {
+                if(in_array(LanguageUtil::underscores_to_camel_case($class), $this->_exclusions)) {
+                    $name     = LanguageUtil::underscores_to_camel_case($class);
+                    $filename = $name . '.php';
+                } else if(class_exists('Config')) {
+                    if(Config::getItem('underscore_to_camel_case')) {
+                        $name     = LanguageUtil::underscores_to_camel_case($class);
+                        $filename = $name . '.php';
+                    } else {
+                        $name     = $class;
+                        $filename = $name . '.php';
+                    }
+                }
+            }
+            if(!$name) {
+                $name = $class;
+            }
+            if(!$filename) {
+                $filename = $name . '.php';
+            }
+            $folder = $this->_load_paths;
             while(!($loaded = (class_exists($name) || interface_exists($name))) && $folder) {
                 $path = BASE_PATH . ($f = array_shift($folder)) . "/" . $filename;
                 @include_once($path);
             }
+
             return ($loaded) ? true : false;
         }
 

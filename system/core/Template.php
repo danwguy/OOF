@@ -11,15 +11,15 @@
         protected $_ob_level;
         public $renderHeader = true;
 
-        public function __construct($controller, $action){
-            $controller = explode("Controller", $controller);
+        public function __construct($controller, $action) {
+            $controller        = explode("Controller", $controller);
             $this->_controller = $controller[0];
-            $this->_action = $action;
-            $this->uri = Loader::load('URI');
-            $this->_ob_level = ob_get_level();
+            $this->_action     = $action;
+            $this->uri         = Loader::load('URI');
+            $this->_ob_level   = ob_get_level();
         }
 
-        public function set($name, $value = null){
+        public function set($name, $value = null) {
 //        $this->variables[$name] = $value;
             if(is_array($name)) {
                 foreach($name as $k => $v) {
@@ -30,11 +30,11 @@
             }
         }
 
-        public function override_view($page){
+        public function override_view($page) {
             $this->override_page = $page;
         }
 
-        protected function _get_output($renderHeader){
+        protected function _get_output($renderHeader) {
             $output = array();
             if($renderHeader) {
                 if(file_exists(APP_PATH . 'views/' . $this->_controller . '/header.php')) {
@@ -88,11 +88,11 @@
         /**
          * @param bool $renderHeader true/false render the header and footer
          *
-         * @param bool $_return see @return for explanation
+         * @param bool $_return      see @return for explanation
          *
          * @return string|void if $_return param is true this will return a string, the content, else it will send output to the browser
          */
-        public function render($renderHeader = true, $_return = false){
+        public function render($renderHeader = true, $_return = false) {
 
             $html = Loader::load('HTML');
             $OOF  = Loader::load('OOF');
