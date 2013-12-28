@@ -44,11 +44,13 @@
         'debug'                    => array(
             'production'  => array(
                 'show_debug'      => false,
-                'start_minimized' => false
+                'start_minimized' => false,
+                'show_file'       => false
             ),
             'development' => array(
                 'show_debug'      => true,
-                'start_minimized' => true
+                'start_minimized' => true,
+                'show_file'       => false
             )
         ),
         'allowed_url_chars'        => 'a-z 0-9~%.:_\-',

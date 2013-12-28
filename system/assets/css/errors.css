@@ -5,11 +5,12 @@
 .php-error-wrapper {
     width: 900px;
     margin: 0 auto;
+    position: relative;
 }
 
 .debug {
     position: relative;
-    top: 100px;
+    /*top: 100px;*/
     width: 100%;
     margin: 0 auto;
     background: rgba(0, 0, 0, .8);
@@ -130,4 +131,23 @@ pre {
     float: right;
     margin-right: 40px;
     cursor: pointer;
+}
+
+.hide {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, .3);
+    cursor: pointer;
+}
+
+.hide:hover {
+    color: white;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+.ui-effects-transfer {
+    border: 1px dotted black;
 }

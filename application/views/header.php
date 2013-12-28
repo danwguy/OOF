@@ -29,9 +29,9 @@
     <script type='text/javascript'>
         <?php
         if(isset($themes)) {
-            echo "var themes = ".json_encode($themes).";";
+            echo "var themes = ".json_encode($themes).";"."\r\n";
         } else {
-            echo "var themes = {};";
+            echo "var themes = {};"."\r\n";
         }
         ?>
         $(document).ready(function () {

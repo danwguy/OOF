@@ -49,6 +49,21 @@ jsDebug = {
             })
         }
     },
+    switchToSmall : function() {
+        this.miniElement().show('bounce', {direction: 'left'});
+        this.element()
+            .css({
+                position : 'absolute',
+                bottom : '0px',
+                right : '0px',
+                overflow : 'hidden'
+            })
+            .animate({height: '10px', width: '10px'}, 2500, function() {
+                $(this).effect("transfer", {to: ".cloud"}, 5500, function() {
+                    $(this).hide();
+                })
+            });
+    },
     remove : function() {
         this.element().hide();
         this.miniElement().hide();

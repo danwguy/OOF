@@ -226,6 +226,7 @@
         }
 
         private function _show_php_error($severity, $message, $path, $line) {
+            $cnfg = Config::getItem('debug', ENVIRONMENT);
             $severity = (!isset($this->levels[$severity])) ? $severity : $this->levels[$severity];
             $path     = str_replace("\\", "/", $path);
             if(false !== strpos($path, '/')) {
@@ -237,7 +238,9 @@
             }
             ob_start();
             $trace         = CustomException::to_string($message, false);
-            $file_contents = $this->_get_file($path, $line);
+            if(isset($cnfg['show_file']) && $cnfg['show_file']) {
+                $file_contents = $this->_get_file($path, $line);
+            }
             include(APP_PATH . 'errors/error_php.php');
             $buffer = ob_get_contents();
             ob_end_clean();

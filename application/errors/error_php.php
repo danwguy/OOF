@@ -1,11 +1,16 @@
 <?php
 
-    echo "<script type='text/javascript' src='system/assets/js/jquery.js'></script>
-          <script type='text/javascript' src='system/assets/js/prettify.js'></script>
+    echo "<script type='text/javascript' src='system/assets/js/prettify.js'></script>
           <script type='text/javascript' src='system/assets/js/errors.js'></script>
           <link rel='stylesheet' href='system/assets/css/errors.css' />";
 ?>
 <script type="text/javascript">
+    if(typeof $ != 'function') {
+        var js = document.createElement("script");
+        js.type = "text/javascript";
+        js.src = "system/assets/js/jquery.js";
+        document.body.appendChild(js);
+    }
     $(document).ready(function() {
         prettyPrint();
         $('.error-line')
@@ -36,7 +41,7 @@
         <?php echo $trace; ?>
     </div>
     <div class="php-file">
-        <?php  echo $file_contents; ?>
+        <?php  echo (isset($file_contents) ? $file_contents : ''); ?>
     </div>
 
 
