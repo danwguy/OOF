@@ -10,8 +10,8 @@
 
 .debug {
     position: relative;
-    /*top: 100px;*/
     width: 100%;
+    height: 100%;
     margin: 0 auto;
     background: rgba(0, 0, 0, .8);
     border-top: 2px solid #ccc;
@@ -150,4 +150,5 @@ pre {
 
 .ui-effects-transfer {
     border: 1px dotted black;
+    background: rgba(0, 0, 0, .2);
 }

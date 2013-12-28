@@ -1,6 +1,7 @@
 jsDebug = {
     expanded : false,
     startMinimized : null,
+    elementSize : {},
     element : function() {
         return $('.debug');
     },
@@ -14,6 +15,8 @@ jsDebug = {
         } else {
             this.maximize();
         }
+        this.elementSize.width = this.element().width();
+        this.elementSize.height = this.element().height();
         this.addClicks();
     },
     minimize : function() {
@@ -30,7 +33,13 @@ jsDebug = {
         });
     },
     reveal : function() {
-        this.element().show();
+        if(this.element().width() != this.elementSize.width) {
+            this.element()
+                .width(this.elementSize.width)
+                .height(this.elementSize.height)
+                .css('left', 0);
+        }
+        this.element().show('slide', {direction : 'left'});
         this.miniElement().hide();
     },
     revealSlide : function() {
@@ -50,18 +59,18 @@ jsDebug = {
         }
     },
     switchToSmall : function() {
-        this.miniElement().show('bounce', {direction: 'left'});
         this.element()
             .css({
-                position : 'absolute',
-                bottom : '0px',
-                right : '0px',
-                overflow : 'hidden'
+                overflow: 'hidden'
             })
-            .animate({height: '10px', width: '10px'}, 2500, function() {
-                $(this).effect("transfer", {to: ".cloud"}, 5500, function() {
-                    $(this).hide();
-                })
+            .animate({
+                height: '10px',
+                width: '10px',
+                left : '-' + (jsDebug.elementSize.width / 2) + 'px',
+                top: 0
+            }, 1000, function() {
+                $(this).hide();
+                jsDebug.miniElement().show('bounce', {direction: 'left'}, 750);
             });
     },
     remove : function() {
@@ -78,9 +87,8 @@ jsDebug = {
             jsDebug.reveal();
         });
         this.element().on('click', '.hide', function() {
-            jsDebug.miniElement().show();
-            jsDebug.miniSlide('hide');
-            jsDebug.element().hide();
+            jsDebug.switchToSmall();
+            that.expanded = !that.expanded;
         });
         this.miniElement().on('click', '.hide-all', function() {
             jsDebug.element().hide();
