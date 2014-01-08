@@ -50,7 +50,7 @@
             'development' => array(
                 'show_debug'      => true,
                 'start_minimized' => true,
-                'show_file'       => false
+                'show_file'       => true
             )
         ),
         'allowed_url_chars'        => 'a-z 0-9~%.:_\-',

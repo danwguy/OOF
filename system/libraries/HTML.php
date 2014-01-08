@@ -4,19 +4,33 @@
     class HTML {
 
 
+        const BR           = "<br />";
+        const HR           = "<hr />";
+        const NBSP         = "&nbsp;";
+        const KEYWORDS = "break, continue, do, else, for, if, return, while, foreach, abstract, bool, extends, final, finally, implements, null, false, true, throw, function, const, static, public, private, protected, class, int, float, double, array, die, exit, goto, require, require_once, include, echo, print_r, var_dump, print, global, \$_POST, \$_REQUEST, \$_GET, \$_SERVER, switch, case, break, next, end, self";
+
+        protected static $link_tag = array('rel' => 'stylesheet', 'type' => 'text/css');
+
         public $config;
         public $base;
+        public $ob_level;
 
         private $js = array();
         private $_image_path;
         private $_js_path;
         private $_css_path;
-
-        const BR   = "<br />";
-        const HR   = "<hr />";
-        const NBSP = "&nbsp;";
-
-        protected static $link_tag = array('rel' => 'stylesheet', 'type' => 'text/css');
+        private $_highlight_included = false;
+        private static $_static_method_regex = '/[a-zA-Z0-9_]+\:\:(?<!\s)/';
+        private static $_inline_comment_regex = '~\s*\/\/(.*?)$~m';
+        private static $_block_comment_regex = '#/\*.+?\*/#s';
+        private static $_doc_comment_regex = '#/\*\*.+?\*/#s';
+        private static $_property_regex = '/(?<=->)[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff^(]*/';
+        private static $_method_regex = '/(->|::)(\s*[a-zA-Z0-9_]+)(\s*\()/';
+        private static $_variable_regex = '/(?<=\$)[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/';
+        private static $_punctuation_regex = '/[,!=@#%^&*(){}\.\-><:;]+/';
+        private static $_string_regex = '/[\"\']\s*(.*?)\s*[\"\']/';
+        private static $_function_regex = '/function\s*([a-zA-z0-9_]+)/';
+        private static $_const_regex = '/(?:["\'][^"\']+["\']|([A-Z0-9_\\.]+\b))/';
 
         public function __construct() {
             $this->config      = Loader::load('Config', 'core');
@@ -24,6 +38,7 @@
             $this->_image_path = $this->base . 'img/';
             $this->_js_path    = $this->base . 'js/';
             $this->_css_path   = $this->base . 'css/';
+            $this->ob_level = ob_get_level();
         }
 
         public function shortenUrls($data) {
@@ -33,18 +48,6 @@
                 $data);
 
             return $data;
-        }
-
-        private function _fetchTinyUrl($url) {
-            $ch      = curl_init();
-            $timeout = 5;
-            curl_setopt($ch, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url-' . $url[0]);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            $data = curl_exec($ch);
-            curl_close($ch);
-
-            return '<s href="' . $data . '" target="_blank">' . $data . '</a>';
         }
 
         public function sanitize($data) {
@@ -63,6 +66,25 @@
             }
 
             return $data;
+        }
+
+        protected function _prep_link($link, $type = null, $omit = false) {
+            $prep = '';
+            if(strpos($link, '://') === false) {
+                $prep = $this->base;
+            }
+            if($type) {
+                if(!$omit) {
+                    if(substr($link, -strlen($type)) != $type) {
+                        $link = $link . '.' . $type;
+                    }
+                }
+                if(substr($link, 0, strlen($type) + 1) != $type . '/') {
+                    $prep = $prep . $type . '/';
+                }
+            }
+
+            return $prep . $link;
         }
 
         public function includeJs($filename) {
@@ -106,35 +128,6 @@
 
         public function heading($text, $level = 1, $attr = '') {
             return "<h" . $level . " " . $attr . ">" . $text . "</h" . $level . ">";
-        }
-
-        public function img() {
-            $args = func_get_args();
-            $args = array_shift($args);
-            $num  = func_num_args();
-            $img  = "<img ";
-            $attr = '';
-            if($num == 0) {
-                return '';
-            }
-            if($num == 1) {
-                if(is_array($args)) {
-                    foreach($args as $key => $val) {
-                        if($key == 'src') {
-                            $src = $this->_prep_link($val, 'img', true);
-                            $img .= ' ' . $key . '="' . $src . '" ';
-                        } else {
-                            $img .= ' ' . $key . '="' . $val . '" ';
-                        }
-                    }
-                    $img .= " />";
-                } else {
-                    $src = $this->_prep_link($args, 'img', true);
-                    $img .= "src='" . $src . "' />";
-                }
-            }
-
-            return $img;
         }
 
         public function link_tag() {
@@ -287,10 +280,6 @@
             return $this->make_list('ul', $list, $attribs);
         }
 
-        public function ol(array $list, array $attribs = array()) {
-            return $this->make_list('ol', $list, $attribs);
-        }
-
         public function make_list($type = 'ul', array $list, array $attribs = array()) {
             $ret = "<" . $type . " ";
             if($attribs && !empty($attribs)) {
@@ -314,6 +303,10 @@
             $ret .= '</' . $type . '>';
 
             return $ret;
+        }
+
+        public function ol(array $list, array $attribs = array()) {
+            return $this->make_list('ol', $list, $attribs);
         }
 
         public function doctype() {
@@ -386,8 +379,44 @@
             return $replaced;
         }
 
+        public function img() {
+            $args = func_get_args();
+            $args = array_shift($args);
+            $num  = func_num_args();
+            $img  = "<img ";
+            $attr = '';
+            if($num == 0) {
+                return '';
+            }
+            if($num == 1) {
+                if(is_array($args)) {
+                    foreach($args as $key => $val) {
+                        if($key == 'src') {
+                            $src = $this->_prep_link($val, 'img', true);
+                            $img .= ' ' . $key . '="' . $src . '" ';
+                        } else {
+                            $img .= ' ' . $key . '="' . $val . '" ';
+                        }
+                    }
+                    $img .= " />";
+                } else {
+                    $src = $this->_prep_link($args, 'img', true);
+                    $img .= "src='" . $src . "' />";
+                }
+            }
+
+            return $img;
+        }
+
         public function clean($str) {
             return strip_tags($str);
+        }
+
+        public function highlight($content, $language, $return = true) {
+            if(strtolower($language) == 'php') {
+                return $this->_syntaxHighlight($content, $return);
+            }
+            return $content;
         }
 
         public function setupJsVars() {
@@ -403,23 +432,153 @@
             return $out;
         }
 
-        protected function _prep_link($link, $type = null, $omit = false) {
-            $prep = '';
-            if(strpos($link, '://') === false) {
-                $prep = $this->base;
-            }
-            if($type) {
-                if(!$omit) {
-                    if(substr($link, -strlen($type)) != $type) {
-                        $link = $link . '.' . $type;
-                    }
-                }
-                if(substr($link, 0, strlen($type) + 1) != $type . '/') {
-                    $prep = $prep . $type . '/';
-                }
-            }
+        private function _fetchTinyUrl($url) {
+            $ch      = curl_init();
+            $timeout = 5;
+            curl_setopt($ch, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url-' . $url[0]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            $data = curl_exec($ch);
+            curl_close($ch);
 
-            return $prep . $link;
+            return '<s href="' . $data . '" target="_blank">' . $data . '</a>';
+        }
+
+        private function _syntaxHighlight($content, $return) {
+            $keywords = explode(", ", self::KEYWORDS);
+            $keywords_regex = "/(".implode("|", $keywords).")(\s+|::|\(|~)/";
+            $content = preg_replace_callback(self::$_const_regex, function($matches) {
+                if(count($matches) >= 2) {
+                    return "~~~CONST~~~".$matches[1]."~~~FINCONST~~~";
+                } else {
+                    return $matches[0];
+                }
+            }, $content);
+            $content = preg_replace_callback(self::$_static_method_regex, function($matches) {
+                return '~~~STATIC~~~'.substr($matches[0], 0, -2).'~~~FINSTATIC~~~::';
+            }, $content);
+            $content = preg_replace_callback(self::$_inline_comment_regex, function($matches) {
+                return '~~~COM~~~'.$matches[0].'~~~FINCOM~~~';
+            }, $content);
+            $content = preg_replace_callback(self::$_doc_comment_regex, function($matches) {
+                return '~~~DOC~~~'.substr($matches[0], 3).'~~~FINDOC~~~';
+            }, $content);
+            $content = preg_replace_callback(self::$_block_comment_regex, function($matches) {
+                return '~~~COM~~~'.$matches[0].'~~~FINCOM~~~';
+            }, $content);
+            $content = preg_replace_callback(self::$_property_regex, function($matches) {
+                return (substr($matches[0], -1) != '(') ? "~~~PROP~~~".$matches[0]."~~~FINPROP~~~" : $matches[0];
+            }, $content);
+            $content = preg_replace_callback(self::$_method_regex, function($matches){
+                return $matches[1]."~~~METHOD~~~".$matches[2]."~~~FINMETHOD~~~".(isset($matches[3]) ? $matches[3] : '');
+            }, $content);
+            $content = preg_replace_callback(self::$_variable_regex, function($matches) {
+                return (substr($matches[0], -2) == "->")
+                    ? "~~~VAR~~~".substr($matches[0], 0, -2)."~~~FINVAR~~~"."->"
+                    : "~~~VAR~~~".$matches[0]."~~~FINVAR~~~";
+            }, $content);
+            $content = preg_replace_callback(self::$_punctuation_regex, function($matches) {
+                return (is_numeric($matches[0])) ? $matches[0] : "~~~PUN~~~".$matches[0]."~~~FINPUN~~~";
+            }, $content);
+            $content = preg_replace_callback(self::$_string_regex, function($matches) {
+                return "~~~STR~~~".$matches[0]."~~~FINSTR~~~";
+            }, $content);
+            $content = preg_replace_callback(self::$_function_regex, function($matches) {
+                return "function ~~~FUN~~~".$matches[1]."~~~FINFUN~~~";
+            }, $content);
+            $content = preg_replace_callback($keywords_regex, function($matches) {
+                return "~~~KEY~~~".((substr($matches[0], -1) == '~') ? $matches[1]."~~~FINKEY~~~~" : $matches[1]."~~~FINKEY~~~");
+            }, $content);
+
+            $base = "<span class='";
+            $end = "'>";
+            $fin = "</span>";
+            $stat = $base . "static".$end;
+            $prop = $base."property".$end;
+            $com = $base."com".$end;
+            $doc = $base."doc".$end.'/**';
+            $finprop = $finmethod = $finvar = $finpun = $finstring = $finfunction = $finconst = $finstat = $fincom = $findoc = $fin;
+            $method = $base."method".$end;
+            $var = $base."var".$end;
+            $pun = $base."punctuation".$end;
+            $string = $base."str".$end;
+            $function = $base."function".$end;
+            $keyword = $base."keyword".$end;
+            $const = $base."const".$end;
+            $finkeyword = $fin ." ";
+            $replace = array(
+                '~~~STATIC~~~',
+                '~~~PROP~~~',
+                '~~~COM~~~',
+                '~~~DOC~~~',
+                '~~~METHOD~~~',
+                '~~~VAR~~~',
+                '~~~PUN~~~',
+                '~~~STR~~~',
+                '~~~FUN~~~',
+                '~~~KEY~~~',
+                '~~~CONST~~~'
+            );
+            $replace_with = array(
+                $stat,
+                $prop,
+                $com,
+                $doc,
+                $method,
+                $var,
+                $pun,
+                $string,
+                $function,
+                $keyword,
+                $const
+            );
+            $replace_2 = array(
+                '~~~FINSTATIC~~~',
+                '~~~FINPROP~~~',
+                '~~~FINCOM~~~',
+                '~~~FINDOC~~~',
+                '~~~FINMETHOD~~~',
+                '~~~FINVAR~~~',
+                '~~~FINPUN~~~',
+                '~~~FINSTR~~~',
+                '~~~FINFUN~~~',
+                '~~~FINKEY~~~',
+                '~~~FINCONST~~~'
+            );
+            $replace_with_2 = array(
+                $finstat,
+                $finprop,
+                $fincom,
+                $findoc,
+                $finmethod,
+                $finvar,
+                $finpun,
+                $finstring,
+                $finfunction,
+                $finkeyword,
+                $finconst
+            );
+            $content = str_replace($replace, $replace_with, $content);
+            $content = str_replace($replace_2, $replace_with_2, $content);
+            $content = "<pre class='highlight'>".str_replace("~", "", $content)."</pre>";
+            $content = str_replace('$', '<span class="var">$</span>', $content);
+            if(!$this->_highlight_included) {
+                if(file_exists(PUBLIC_PATH.'css/highlight.css')) {
+                    $ret = "<link rel='stylesheet' href='".PUBLIC_PATH."css/highlight.css' />";
+                } else {
+                    $ret = "<link rel='stylesheet' href='system/assets/css/highlight.css' />";
+                }
+                $ret .= "<script type='text/javascript' src='system/assets/js/highlight.js'></script>";
+                $this->_highlight_included = true;
+            }
+            $ret .= "\r\n".$content;
+            if($return) {
+                return $ret;
+            } else {
+                $out = Loader::load('Output');
+                $out->append_output($ret);
+                return;
+            }
         }
 
     }

@@ -1,0 +1,63 @@
+@font-face {
+    font-family: 'calibriregular';
+    src: url('../fonts/calibri-webfont.eot');
+    src: url('../fonts/calibri-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/calibri-webfont.woff') format('woff'),
+    url('../fonts/calibri-webfont.ttf') format('truetype'),
+    url('../fonts/calibri-webfont.svg#calibriregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.highlight {
+    background: rgba(43, 43, 43, 1);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    font-family: monospace;
+    color: darkgray;
+    font-size: 14px;
+}
+
+pre span {
+    line-height: 15px;
+}
+
+pre .property, pre .var {
+    color: #9876aa;
+}
+
+pre .method, pre .function {
+    color: #FFC66D;
+}
+
+pre .punctuation {
+    color: #ffffff;
+}
+
+pre .str {
+    color: #A5C25C !important;
+}
+
+pre .keyword {
+    color: #CC7832;
+}
+
+pre .const {
+    color: #9876aa;
+    font-style: italic;
+    text-transform: uppercase;
+}
+
+pre .static {
+    color: white;
+    font-style: italic;
+}
+
+pre .com {
+    color: #898989 !important;
+}
+
+pre .doc {
+    color: #629755;
+}
