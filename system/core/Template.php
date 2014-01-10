@@ -9,7 +9,10 @@
         protected $_action;
         protected $override_page;
         protected $_ob_level;
+        protected $_active;
+
         public $renderHeader = true;
+
 
         public function __construct($controller, $action) {
             $controller        = explode("Controller", $controller);
@@ -20,7 +23,6 @@
         }
 
         public function set($name, $value = null) {
-//        $this->variables[$name] = $value;
             if(is_array($name)) {
                 foreach($name as $k => $v) {
                     $this->variables[$k] = $v;
@@ -94,43 +96,48 @@
          */
         public function render($renderHeader = true, $_return = false) {
 
-            $html = Loader::load('HTML');
-            $OOF  = Loader::load('OOF');
-            extract($this->variables);
+            $conf = Config::getItem('use_template');
+            if($conf) {
+                $html = Loader::load('HTML');
+                $OOF  = Loader::load('OOF');
+                extract($this->variables);
 
-            ob_start();
-            $output = $this->_get_output($renderHeader);
-            if($output) {
-                foreach(array('header', 'content', 'footer') as $piece) {
-                    if(isset($output[$piece]) && $output[$piece]['render']) {
-                        if(file_exists($output[$piece]['path'])) {
-                            if((bool)@
-                                ini_get('short_open_tag') === false && Config::getItem('rewrite_short_tags') == true
-                            ) {
-                                echo eval('?>' . preg_replace(
-                                        "/;*\s*\?>/",
-                                        "; ?>",
-                                        str_replace('<?=', '<?php echo ', file_get_contents($output[$piece]['path']))));
+                ob_start();
+                $output = $this->_get_output($renderHeader);
+                if($output) {
+                    foreach(array('header', 'content', 'footer') as $piece) {
+                        if(isset($output[$piece]) && $output[$piece]['render']) {
+                            if(file_exists($output[$piece]['path'])) {
+                                if((bool)@
+                                    ini_get('short_open_tag') === false && Config::getItem('rewrite_short_tags') == true
+                                ) {
+                                    echo eval('?>' . preg_replace(
+                                            "/;*\s*\?>/",
+                                            "; ?>",
+                                            str_replace('<?=', '<?php echo ', file_get_contents($output[$piece]['path']))));
+                                } else {
+                                    include($output[$piece]['path']);
+                                }
                             } else {
-                                include($output[$piece]['path']);
+                                OOF::show_404("{$this->_controller}/{$this->_action}");
                             }
-                        } else {
-                            OOF::show_404("{$this->_controller}/{$this->_action}");
                         }
                     }
                 }
-            }
-            if($_return) {
-                $buffer = ob_get_contents();
-                @ob_end_clean();
+                if($_return) {
+                    $buffer = ob_get_contents();
+                    @ob_end_clean();
 
-                return $buffer;
-            }
-            if(ob_get_level() > $this->_ob_level + 1) {
-                ob_end_flush();
+                    return $buffer;
+                }
+                if(ob_get_level() > $this->_ob_level + 1) {
+                    ob_end_flush();
+                } else {
+                    $OOF->output->append_output(ob_get_contents());
+                    @ob_end_clean();
+                }
             } else {
-                $OOF->output->append_output(ob_get_contents());
-                @ob_end_clean();
+                OOF::show_error('Template is not turned on in the config');
             }
         }
 

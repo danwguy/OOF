@@ -173,8 +173,13 @@
                         $output .= Debug::getJscript(($active_config['start_minimized']) ? true : false);
                         $output .= $debug_content;
                     }
-                    Debug::$content = array();
                 }
+                if($active_config['log_output']) {
+                    $logger = Loader::load('Logger');
+                    $content = Debug::getDebugContent(false);
+                    $logger->log(print_r($content, true), 'debug');
+                }
+                Debug::$content = array();
             }
             if(method_exists($OOF, '_output')) {
                 $OOF->_output($output);

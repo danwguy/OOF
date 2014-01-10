@@ -145,11 +145,6 @@
 
         protected function _logging($data) {
             self::logAll($data);
-//            if($this->_log_all) {
-//                $func = '_'.$data['type']."_message";
-//                $message = $this->$func($data['args']);
-//                $this->_log->log($message, Logger::DEBUG_FILE, true);
-//            }
         }
 
         public function run() {
@@ -196,7 +191,7 @@
             return call_user_func_array(array($this->_controller, $method), $args);
         }
 
-        public function __callStatic($method, $args) {
+        public static function __callStatic($method, $args) {
             self::logAll(
                 array(
                      'type' => 'static',

@@ -36,7 +36,7 @@
         'compress_output'          => false,
         'cache_path'               => '',
         'date_formatting'          => array(
-            'log_file'      => 'Y-m-d H:i:s',
+            'log_file'      => 'l F jS Y \a\t h:i:s a',
             'calendar_lang' => 'calendar',
             'screen_output' => 'l \the jS \of F Y \at h:i:s a', //experimental this is not in use yet
             'db_storage'    => 'Y-m-d H:i:s'
@@ -45,12 +45,14 @@
             'production'  => array(
                 'show_debug'      => false,
                 'start_minimized' => false,
-                'show_file'       => false
+                'show_file'       => false,
+                'log_output'      => true
             ),
             'development' => array(
                 'show_debug'      => true,
                 'start_minimized' => true,
-                'show_file'       => true
+                'show_file'       => true,
+                'log_output'      => true
             )
         ),
         'allowed_url_chars'        => 'a-z 0-9~%.:_\-',

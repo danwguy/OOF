@@ -132,56 +132,78 @@
             return CustomException::to_string($this->getMessage());
         }
 
-        public static function to_string($string, $backtrace = false) {
+        public static function to_string($string, $backtrace = false, $html_out = true) {
             if(!$backtrace) {
                 $backtrace = debug_backtrace(false);
             }
             $backtrace_strings = array();
             if($backtrace) {
-                foreach($backtrace as $step => $entry) {
-                    $backtrace_string =
-                        "<div class='step-number'>Step #" . str_pad($step, 2, " ", STR_PAD_LEFT) . ":</div>";
-                    $backtrace_string .= "\r\n";
-                    $backtrace_string .= "<div class='step-content'>" . (isset($entry['class']) ? $entry['class'] : "")
-                                         . (isset($entry['type']) ? $entry['type'] : "") . "{$entry['function']}(";
-                    $backtrace_string .= implode(
-                        ", ",
-                        array_map(
-                            function ($arg) {
-                                $max_string_length = 80;
-                                $arg_string        = preg_replace("/\s+/", " ", LanguageUtil::to_string($arg));
-                                if(strlen($arg_string) > $max_string_length) {
-                                    return substr($arg_string, 0, floor($max_string_length * 3 / 5)) . "... " . (substr(
-                                        $arg_string,
-                                        -floor($max_string_length * 2 / 5)));
-                                } else {
-                                    return $arg_string;
-                                }
-                            },
-                            $entry{'args'}));
-                    $backtrace_string .= ")";
-                    $backtrace_string .= "\r\n";
-                    $backtrace_string .= (isset($entry['line'])) ? "On line " . $entry['line'] : '';
-                    $backtrace_string .= (isset($entry['file'])) ? " of file " . $entry['file'] : '';
-                    $backtrace_string .= "</div>";
-                    $backtrace_strings[] = $backtrace_string;
+                if($html_out) {
+                    foreach($backtrace as $step => $entry) {
+                        $backtrace_string =
+                            "<div class='step-number'>Step #" . str_pad($step, 2, " ", STR_PAD_LEFT) . ":</div>";
+                        $backtrace_string .= "\r\n";
+                        $backtrace_string .= "<div class='step-content'>" . (isset($entry['class']) ? $entry['class'] : "")
+                                             . (isset($entry['type']) ? $entry['type'] : "") . "{$entry['function']}(";
+                        $backtrace_string .= implode(
+                            ", ",
+                            array_map(
+                                function ($arg) {
+                                    $max_string_length = 80;
+                                    $arg_string        = preg_replace("/\s+/", " ", LanguageUtil::to_string($arg));
+                                    if(strlen($arg_string) > $max_string_length) {
+                                        return substr($arg_string, 0, floor($max_string_length * 3 / 5)) . "... " . (substr(
+                                            $arg_string,
+                                            -floor($max_string_length * 2 / 5)));
+                                    } else {
+                                        return $arg_string;
+                                    }
+                                },
+                                $entry{'args'}));
+                        $backtrace_string .= ")";
+                        $backtrace_string .= "\r\n";
+                        $backtrace_string .= (isset($entry['line'])) ? "On line " . $entry['line'] : '';
+                        $backtrace_string .= (isset($entry['file'])) ? " of file " . $entry['file'] : '';
+                        $backtrace_string .= "</div>";
+                        $backtrace_strings[] = $backtrace_string;
+                    }
+
+
+                    $out = "<pre>";
+                    $out .= "<div class='backtrace'>";
+                    $out .= "\r\n";
+                    $backtrace_block = "<div class='backtrace-block'>";
+                    $backtrace_block .= implode("</div>" . "\r\n" . "<div class='backtrace-block'>", $backtrace_strings);
+                    $backtrace_block = substr($backtrace_block, 0, -23);
+                    $time            = new DateTime();
+                    $format_time     = $time->format("G:iA F jS T");
+                    $out .= "\r\n" . "<div class='backtrace-timestamp'>Timestamp: " . $format_time . "</div>";
+                    $out .= "\r\n" . "<div class='backtrace-block-wrapper'>
+                            <div class='backtrace-block-title'>Backtrace:</div>" .
+                            $backtrace_block .
+                            "</div>" . "\r\n";
+                    $out .= "</div>";
+                    $out .= "</pre>";
+                } else {
+                    foreach ($backtrace as $key => $entry) {
+                        $backtrace_string = str_pad($key, 2, " ", STR_PAD_LEFT).": {$entry['file']}:{$entry['line']}\n";
+                        $backtrace_string .= "      ".(isset($entry['class']) ? $entry['class'] : "").(isset($entry['type']) ? $entry['type'] : "")."{$entry['function']}(";
+                        $backtrace_string .= implode(", ", array_map(function ($arg) {
+                            $max_string_length = 80;
+                            $arg_string = preg_replace("/\s+/", " ", LanguageUtil::to_string($arg));
+                            if (strlen($arg_string) > $max_string_length) {
+                                return substr($arg_string, 0, floor($max_string_length*3/5))."...".(substr($arg_string, -floor($max_string_length*2/5)));
+                            } else {
+                                return $arg_string;
+                            }
+                        }, $entry{'args'}));
+                        $backtrace_string .= ")";
+                        $backtrace_strings[] = $backtrace_string;
+                    }
+                    $backtrace_block = implode("\n", $backtrace_strings);
+                    return "Timestamp: ".DateTimeUtil::format(new DateTime(), "Y-m-d H:i:s T")."\nBacktrace:\n$backtrace_block\n$string\n";
                 }
             }
-            $out = "<pre>";
-            $out .= "<div class='backtrace'>";
-            $out .= "\r\n";
-            $backtrace_block = "<div class='backtrace-block'>";
-            $backtrace_block .= implode("</div>" . "\r\n" . "<div class='backtrace-block'>", $backtrace_strings);
-            $backtrace_block = substr($backtrace_block, 0, -23);
-            $time            = new DateTime();
-            $format_time     = $time->format("G:iA F jS T");
-            $out .= "\r\n" . "<div class='backtrace-timestamp'>Timestamp: " . $format_time . "</div>";
-            $out .= "\r\n" . "<div class='backtrace-block-wrapper'>
-                    <div class='backtrace-block-title'>Backtrace:</div>" .
-                    $backtrace_block .
-                    "</div>" . "\r\n";
-            $out .= "</div>";
-            $out .= "</pre>";
 
             return $out;
         }
@@ -249,7 +271,7 @@
         }
 
         public static function handleException($severity, $message, $file_path, $line) {
-            if($severity == E_STRICT) {
+            if($severity == E_STRICT || $severity == E_WARNING) {
                 return;
             }
             $me = Loader::load('CustomException');

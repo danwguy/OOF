@@ -24,7 +24,7 @@
             $this->_log_to_files = (isset($this->_config['log_to_files']) && $this->_config['log_to_files'])
                 ? true
                 : false;
-            $this->_enabled      = (isset($this->_config['enabled'])) ? $this->_config['enabled'] : false;
+            $this->_enabled      = (isset($this->_config['enable'])) ? $this->_config['enable'] : false;
             $this->_level        = (isset($this->_config['logging_level'])
                                     && is_numeric(
                     $this->_config['logging_level']))
@@ -32,7 +32,7 @@
                 : 0;
             $date_format         = Config::getItem('date_formatting', 'log_file');
             $this->_date_format  = ($date_format)
-                ? Config::getItem('date_formatting', 'log_file')
+                ? $date_format
                 : $this->_date_format;
             $this->_setup_structure();
         }
@@ -120,12 +120,15 @@
                 return false;
             }
 
-            $path = $this->logging_dir . '/' . $level . '_log-' . date('Y-m-d') . '.log';
+            $path = $this->logging_dir . '/error.log';
+//            $path = $this->logging_dir . '/' . $level . '_log-' . date('Y-m-d') . '.log';
             if(!$fp = @fopen($path, FILE_WRITE_END_CREATE)) {
+                $this->log('unable to open or create path: '.$path, 'debug');
                 return false;
             }
-            $message = $level . ' ' . (($level == 'INFO') ? ' -' : '-') . ' ' . date($this->_date_format) . ' --> '
-                       . $msg . "\n";
+            $message = 'OOF Error log - ' . date($this->_date_format). "\r\n";
+            $message .= $level . ' ' . (($level == 'INFO') ? ' -' : '-') . ' ' . date($this->_date_format) . ' --> '
+                       . $msg . "\r\n"."\r\n";
 
             flock($fp, LOCK_EX);
             fwrite($fp, $message);
@@ -138,23 +141,29 @@
         }
 
         protected function _file_log($string, $file, $log_backtrace) {
+            if(substr($file, -3) != 'log' || substr($file, -3) != 'txt') {
+                $file = $file . '.log';
+            }
+            if(!in_array($file, $this->log_files)) {
+                OOF::show_error("Invalid log file used");
+                return;
+            }
             $log_file_path = $this->logging_dir . '/' . $file;
             $fp            = @fopen($log_file_path, FILE_READ_WRITE_END_CREATE);
             if($fp) {
                 $now        = new DateTime();
                 $log_string = "\r\n" . "\r\n" . "Timestamp: " . DateTimeUtil::format(
                                                                             $now,
-                                                                            DateTimeUtil::DATETIME_FORMAT_LOGGING) . "\r\n";
-                if($log_backtrace) {
-                    $trace       = debug_backtrace();
-                    $debug_lines = "\r\n";
-                    foreach($trace as $array) {
-                        if(!isset($array['file'])) {
-                            continue;
-                        }
-                        $debug_lines .= "In File: " . $array['file'] . " on line: " . $array['line'] . "\r\n";
+                                                                            $this->_date_format) . "\r\n";
+                if(is_array($string)) {
+                    $out = '';
+                    foreach($string as $k => $v) {
+                        $out .= $k . ': '.(is_array($v) ? print_r($v, true) : $v). "\r\n";
                     }
-                    $log_string .= $string . "\r\n" . "Trace Route:" . "\r\n" . $debug_lines . "\r\n";
+                    $string = $out;
+                }
+                if($log_backtrace) {
+                    $log_string = CustomException::to_string($string, false, false);
                 } else {
                     $log_string .= $string;
                 }
@@ -163,6 +172,7 @@
             } else {
                 OOF::show_error("Unable to open the log file at " . $log_file_path . " for writing");
             }
+            return;
         }
 
         protected function _database_log($content, $trace) {
