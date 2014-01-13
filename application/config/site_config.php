@@ -34,7 +34,6 @@
             )
         ),
         'compress_output'          => false,
-        'cache_path'               => '',
         'date_formatting'          => array(
             'log_file'      => 'l F jS Y \a\t h:i:s a',
             'calendar_lang' => 'calendar',

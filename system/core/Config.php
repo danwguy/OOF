@@ -180,6 +180,8 @@
                     $this->return = self::$return_fail = false;
                 } else if($this->items['return'] == 'true') { //Why would you, I don't know but just in case
                     $this->return = self::$return_fail = true;
+                } else if($this->items['return'] == 'null') {
+                    $this->return = self::$return_fail = null;
                 } else {
                     $this->return = self::$return_fail = $this->items['return'];
                 }

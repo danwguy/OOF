@@ -15,14 +15,16 @@ class GamesController extends Controller {
         $this->renderHeader = false;
         $games = Game::retrieve_objects("");
         $this->set('games', $games);
-	    $this->load->view('games/index');
+        $this->render('games/index', false);
+//	    $this->load->view('games/index');
     }
 
     public function play($id) {
         $game = new Game($id);
         $this->set('game', $game);
         $this->renderHeader = false;
-	    $this->load->view($game->play_page);
+        $this->render($game->play_page, false);
+//	    $this->load->view($game->play_page);
 //        if($game->play_page) {
 //            $this->override_view($game->play_page);
 //        }

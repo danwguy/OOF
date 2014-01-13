@@ -21,7 +21,8 @@ class HomeController extends Controller {
 	    );
         echo $vars['non-existent'];
         $this->set($vars);
-        $this->_template->render();
+        $this->render(true);
+//        $this->_template->render();
     }
 
     public function afterAction() {}

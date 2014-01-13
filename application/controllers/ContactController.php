@@ -10,7 +10,8 @@ class ContactController extends Controller {
     public function index() {
         $this->renderHeader = false;
         $this->noModel = true;
-	    $this->load->view('contact/index');
+        $this->render('contact/view', false);
+//	    $this->load->view('contact/index');
     }
 
     public function afterAction() {}

@@ -78,5 +78,4 @@
             <option value='3'>Why yes, I am insane(hard)</option>
         </select>
     </label>
-    <input type='text' class='clear-input' />
 </div>

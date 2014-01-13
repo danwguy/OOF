@@ -37,6 +37,7 @@ var simon = {
     },
     lastClickedElement: null,
     gameOverReason: null,
+    gameOverSubTitle: null,
     gameOver : {
         title: '<h3 class="end-game">Game Over</h3>',
         content: '<p class="game-over-reason">' + this.gameOverReason + '</p>'
@@ -67,13 +68,6 @@ var simon = {
         return this.lastClickedElement.children('.normal').attr('color');
     },
     getColorForClick : function() {
-        console.log('Getting the color for click');
-        console.log('click number is:');
-        console.log(this.clickNum);
-        console.log('the level sequence is:');
-        console.log(this.levelSequence);
-        console.log('the number they should have clicked');
-        console.log(this.levelSequence[this.clickNum - 1]);
         return this.levelSequence[this.clickNum - 1];
     },
     getLastColor : function() {
@@ -118,8 +112,6 @@ var simon = {
             this.highestLevelEle().html(this.highestLevel);
         }
         this.difficulty = this.difficulty || this.getDifficulty();
-        console.log('the difficulty:');
-        console.log(this.difficulty);
         if(this.difficulty == 2) {
             if(this.flashDelay > this.MIN_FLASH_DELAY) {
                 this.flashDelay -= 25;
@@ -141,8 +133,6 @@ var simon = {
                 this.timeOut -= 1800;
             }
         }
-        console.log('the current flash delay (time between element flashes');
-        console.log(this.flashDelay);
         this.start();
     },
     flashColor : function(color) {
@@ -204,9 +194,21 @@ var simon = {
         }
     },
     alertUser : function(msg) {
+        popUp.addButton('retry');
+        popUp.addButton('close');
+
         popUp.show({
             title: msg.title,
-            content: msg.content
+            subTitle: msg.subTitle,
+            content: msg.content,
+            theme: 'modern'
+        });
+        popUp.addEvent('retry', 'click', function() {
+            popUp.hide();
+            simon.start();
+        });
+        popUp.addEvent('close', 'click', function() {
+            popUp.hide(true);
         })
     },
     start : function() {
@@ -216,28 +218,22 @@ var simon = {
     },
     getGameOverReason : function() {
         if(this.gameOverReason == this.WRONG_CLICK) {
-            this.gameOverReason += ' You clicked on: ' +
+            this.gameOverSubTitle = this.WRONG_CLICK;
+            this.gameOverReason = ' You clicked on: ' +
                 '' + simon.getLastClicked() + ', but you should have clicked on ' +
                 '' + simon.getFlashColor(simon.getColorForClick());
         } else if(this.gameOverReason == this.DELAY_OF_GAME) {
-            this.gameOverReason += ' You gotta click faster than that, maybe you should' +
+            this.gameOverSubTitle = this.DELAY_OF_GAME;
+            this.gameOverReason = ' You gotta click faster than that, maybe you should' +
                 ' try an easier game difficulty setting';
         } else {
+            this.gameOverSubTitle = "Sorry, but you lost";
             this.gameOverReason = this.DEFAULT_GAME_OVER_REASON;
         }
         return this.gameOverReason;
     },
     endGame : function() {
         this.gameOverReason = this.getGameOverReason();
-        console.log('Game Over');
-        console.log('The Level Sequence');
-        console.log(this.levelSequence);
-        console.log('the click number');
-        console.log(this.clickNum);
-        console.log('the element that should have been clicked');
-        console.log(this.levelSequence[this.clickNum - 1]);
-        console.log('the level sequence without - 1');
-        console.log(this.levelSequence[this.clickNum]);
 
 
         clearTimeout(this.clickTimer);
@@ -254,6 +250,7 @@ var simon = {
 
         this.alertUser({
             title: 'Game Over',
+            subTitle: this.gameOverSubTitle,
             content: this.gameOverReason
         });
     }

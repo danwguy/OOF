@@ -6,7 +6,93 @@ var popUp = {
 	contentOptions:{},
 	content:       null,
 	title:         null,
+    subTitle: null,
 	clickFunctions : false,
+    activeTheme : null,
+    defaultTheme : 'apple',
+    showBothButtons : true,
+    buttons : {},
+    buttonsHTML : null,
+    bodyHTML : null,
+    themes : ['apple', 'modern', 'transparent', 'clean', 'glass'],
+    styleLoaded : false,
+    setTheme : function(theme) {
+        this.activeTheme = theme;
+    },
+    getHTML : function(buttons) {
+        if(!this.bodyHTML) {
+            this.bodyHTML = "<div class='cover'>" +
+                            "<div class='modal " + this.activeTheme + "'>" +
+                               "<div class='inner-modal'>" +
+                                    "<div class='title'>" + this.title + "</div>" +
+                                    "<div class='sub-title'>" + this.subTitle + "</div>" +
+                                    "<div class='game-info'>" +
+                                        "<p>" + this.content + "</p>" +
+                                    "</div>" +
+                                "</div>" +
+                                "<div class='buttons'>";
+            if(typeof buttons != 'undefined') {
+                for(var i = 0, len = buttons.length; i < len; i++) {
+                    this.bodyHTML += "<div class='game-button'><button>" + buttons[i] + "</button></div>";
+                }
+            }  else {
+                this.bodyHTML += this.getButtons();
+            }
+             this.bodyHTML += "</div>" +
+                     "<div class='modal-shine'></div>" +
+                     "</div>" +
+                     "</div>";
+        }
+        return this.bodyHTML;
+    },
+    clear : function() {
+        this.bodyHTML = null;
+        this.activeTheme = null;
+        this.buttons.length = 0;
+        this.buttonsHTML = null;
+    },
+    toType : function(obj) {
+        return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+    },
+    addButton : function(button) {
+        this.buttons[button] = '<div class="game-button" name="' + button + '"><button>' + button + '</button></div>'
+//        this.buttons.push({
+//            name : button,
+//            element: '<div class="game-button"><button>' + button + '</button></div>'
+//        });
+    },
+    getButtons : function() {
+        if(!this.buttonsHTML) {
+            this.buttonsHTML = '';
+            for(var index in this.buttons) {
+                this.buttonsHTML += this.buttons[index];
+            }
+//            for(var i = 0, len = this.buttons.length; i < len; i++) {
+//                this.buttonsHTML += this.buttons[i].element;
+//            }
+            return this.buttonsHTML;
+        } else {
+            return this.buttonsHTML;
+        }
+    },
+    showThemed : function() {
+        if(!this.styleLoaded) {
+            $('head').append('<link rel="stylesheet" href="system/assets/css/popup.css" />');
+            this.styleLoaded = true;
+        }
+        var that = this;
+        $('body').append(that.getHTML());
+        $('.cover').click(function() {
+            that.hide();
+        })
+
+    },
+    addEvent : function(button, event, callback) {
+        if(typeof this.buttons[button] != 'undefined') {
+            var that = this;
+            $('div [name="' + button + '"]').on(event, 'button',  callback);
+        }
+    },
 	add_styles:    function (key, value) {
 		var modalBox = $('.paulund_modal_box');
 		if (key !== undefined) {
@@ -93,72 +179,51 @@ var popUp = {
 			}
 		});
 	},
+    themed : function(opts) {
+        console.log(opts);
+        if(opts.theme) {
+            console.log('theme was passed so setting active theme to passed theme')
+            this.activeTheme = opts.theme;
+        } else if(!this.activeTheme) {
+            this.activeTheme = this.defaultTheme;
+        }
+        this.showThemed();
+    },
 	show:          function (opts) {
 		for (var index in opts) {
 			this[index] = opts[index];
 		}
-		if (!this.content) {
-			this.contentOptions = this.type[opts.getOptions]();
-			this.content = this.contentOptions.content;
-			this.title = this.contentOptions.title;
-		}
-		this.add_block_page();
-		this.add_popup_box(this.title, this.content);
-		this.add_styles();
-		if (this.addClick) {
-			this.addModalClick();
-		}
+        if(typeof opts.type != 'undefined') {
+            this[opts.type](opts);
+        } else {
+            this.themed(opts);
+        }
 		if(this.clickFunctions) {
 			this.clickFunctions();
 			this.clickFunctions = false;
 		}
 	},
-	hide:          function () {
+    mini : function(opts) {
+        miniPopUp.show(opts);
+    },
+    large : function(opts) {
+        this.add_block_page();
+        var title = opts.title || this.title;
+        var content = opts.content || this.content;
+        this.add_popup_box(title, content);
+        this.add_styles();
+    },
+	hide:          function (wipe) {
 		$('.paulund_modal_box').fadeOut().remove();
 		$('.paulund_block_page').fadeOut().remove();
+        $('.cover').fadeOut().remove();
+        $('.modal').fadeOut().remove();
+        if(typeof wipe != 'undefined' && wipe) {
+            this.clear();
+        }
 	},
 	findElements:  function () {
 		return $('.paulund_inner_modal_box').find('input, select');
-	},
-	type:          {
-		script_options:function () {
-			return {
-				title:  'Select Script Options',
-				content:popUp.marketSelect() + '' +
-					        '' + popUp.productSelect() + '' +
-					        '' + popUp.campaignSelect() + '' +
-					'<button class="submit">Submit</button>'
-			}
-		},
-		success:       function () {
-			return {
-				title:  'Successful Save',
-				content:'Successfully saved'
-			}
-		},
-		fail:          function () {
-			if (this.logErrors) {
-				this.logError(this.error)
-			}
-			if (this.failMessage) {
-				this.failMessage = this.makeMessage(this.failMessage);
-				return {
-					title:  this.failTitle,
-					content:this.failMessage
-				}
-			}
-			return {
-				title:  'An Error Occured',
-				content:'There was a problem while processing your request'
-			}
-		},
-		dba_options:   function () {
-			return {
-				title:  'Select a DBA',
-				content:popUp.dbaSelect() + '' +
-					'<button class="submit">Submit</button>'
-			}
-		}
 	},
 	makeMessage:   function (msg) {
 		var output = '';
@@ -184,7 +249,8 @@ var popUp = {
 	},
 	getPage : function(obj) {
 		var data = (typeof obj.data != 'undefined') ? obj.data : '',
-			dataType = (typeof obj.dataType != 'undefined') ? obj.dataType : 'html';
+			dataType = (typeof obj.dataType != 'undefined') ? obj.dataType : 'html',
+            reply;
 		$.ajax({
 			async: false,
 			type: "POST",
@@ -197,64 +263,15 @@ var popUp = {
 		})
 		return reply;
 	},
-	addModalClick: function () {
-		var that = this;
-		$(".submit").click(function () {
-			var market = $("#market").val();
-			var product = $("#product").val();
-			var widgetSet = 4;
-			var campaign = $("#campaign").val();
-			var user = page.user;
-			var url = document.location.href;
-			var form = that.getForm({
-				market:   market,
-				campaign: campaign,
-				widgetSet:widgetSet,
-				user:     user,
-				product:  product,
-				url:      url,
-				intent:   'view_script'
-			});
-			form.submit();
-		})
-	},
 	getForm:       function (options) {
 		var form = $("<form action='" + options.url + "' method='post'></form>");
 
 		for (var index in options) {
 			if (index != 'url') {
-				form.append("<input type='hidden' name='" + index + "' value='" + options[index] + "' />");
+				form.append("<input type='" + options[index].type + "' name='" + index + "' value='" + options[index].value + "' />");
 			}
 		}
 		return form;
-	},
-	marketSelect:  function () {
-		if (page.marketList) {
-			return page.marketList();
-		} else {
-			return '<label for="market">Market:</label><select name="market" id="market"><option value="null">--none--</option></select> '
-		}
-	},
-	campaignSelect:function () {
-		if (page.campaignList) {
-			return page.campaignList();
-		} else {
-			return '<label for="campaign">Campaign:</label><select name="campaign" id="campaign"><option value="null">--none--</option></select> '
-		}
-	},
-	productSelect: function () {
-		if (page.productList) {
-			return page.productList();
-		} else {
-			return '<label for="product">Product:</label><select name="product" id="product"><option value="null">--none--</option></select> '
-		}
-	},
-	dbaSelect:     function () {
-		if (page.dbaList) {
-			return page.dbaList();
-		} else {
-			return '<label for="dba">DBA:</label><select name="dba" id="dba"><option value="null">--none--</option></select> '
-		}
 	}
 };
 
@@ -272,7 +289,7 @@ var miniPopUp = {
             'width':                '390px',
             'padding':              '10px',
             'font-family':          'Custom',
-            'background':           'url(assets/images/mini_popup.png)',
+            'background':           'url(assets/img/mini_popup.png)',
             'z-index':              9999999999
         });
         $('.mini-popup-close').css({

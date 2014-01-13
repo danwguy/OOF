@@ -1,0 +1,450 @@
+@font-face {
+    font-family: 'century_gothicregular';
+    src: url('../fonts/gothic-webfont.eot');
+    src: url('../fonts/gothic-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/gothic-webfont.woff') format('woff'), url('../fonts/gothic-webfont.ttf') format('truetype'), url('../fonts/gothic-webfont.svg#century_gothicregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.game-button {
+    width: 50%;
+    text-align: center;
+    float: left;
+}
+
+button {
+    transition: .5s;
+    -webkit-transition: .5s;
+    outline: none;
+    cursor: pointer;
+}
+
+.cover {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .8);
+    z-index: 9999;
+}
+
+.modal {
+    position: fixed;
+    top: 40%;
+    left: 40%;
+}
+
+.apple {
+    width: 260px;
+    height: 210px;
+    /*margin: 40px auto;*/
+    border-radius: 10px;
+    background: rgb(254, 254, 254); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(254, 254, 254, 1) 0%, rgba(213, 213, 213, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(254, 254, 254, 1)), color-stop(100%, rgba(213, 213, 213, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(254, 254, 254, 1) 0%, rgba(213, 213, 213, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(254, 254, 254, 1) 0%, rgba(213, 213, 213, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(254, 254, 254, 1) 0%, rgba(213, 213, 213, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(254, 254, 254, 1) 0%, rgba(213, 213, 213, 1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefefe', endColorstr='#d5d5d5', GradientType=0); /* IE6-9 */
+    border: 1px solid rgba(213, 213, 213, 1);
+}
+
+.apple .inner-modal {
+    width: 200px;
+    margin: 30px auto 0 auto;
+    padding-top: 5px;
+}
+
+.apple .buttons {
+    width: 100%;
+}
+
+.apple .game-button button {
+    width: 80px;
+    height: 26px;
+    background: rgb(250, 250, 250); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(250, 250, 250, 1) 0%, rgba(199, 199, 199, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(250, 250, 250, 1)), color-stop(100%, rgba(199, 199, 199, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(250, 250, 250, 1) 0%, rgba(199, 199, 199, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(250, 250, 250, 1) 0%, rgba(199, 199, 199, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(250, 250, 250, 1) 0%, rgba(199, 199, 199, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(250, 250, 250, 1) 0%, rgba(199, 199, 199, 1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#c7c7c7', GradientType=0); /* IE6-9 */
+    border-radius: 5px;
+    border: 1px solid #929292;
+    color: #212121;
+    margin: 5px auto;
+    line-height: 24px;
+    text-align: center;
+}
+
+.apple .game-button button:hover {
+    background: rgb(173, 173, 173); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(173, 173, 173, 1) 0%, rgba(199, 199, 199, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(173, 173, 173, 1)), color-stop(100%, rgba(199, 199, 199, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(173, 173, 173, 1) 0%, rgba(199, 199, 199, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(173, 173, 173, 1) 0%, rgba(199, 199, 199, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(173, 173, 173, 1) 0%, rgba(199, 199, 199, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(173, 173, 173, 1) 0%, rgba(199, 199, 199, 1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#adadad', endColorstr='#c7c7c7', GradientType=0); /* IE6-9 */
+}
+
+.apple .title {
+    font-size: 18px;
+    color: #212121;
+    font-weight: bold;
+    text-align: center;
+}
+
+.apple .sub-title {
+    color: #212121;
+    font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    padding: 5px;
+}
+
+.apple .game-info {
+    color: #212121;
+    font-size: 12px;
+    padding: 5px;
+    text-align: center;
+}
+
+.apple .modal-shine {
+    display: none;
+}
+
+.modern {
+    width: 260px;
+    height: 210px;
+    margin: 40px auto;
+    /*border-radius: 10px;*/
+    background: #f2f2f5;
+    /*position: relative;*/
+}
+
+.modern .inner-modal {
+    width: 200px;
+    margin: 0 auto;
+}
+
+.modern .title {
+    width: 260px;
+    background: #afafb2;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    font-size: 18px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    position: absolute;
+    left: 0;
+}
+
+.modern .sub-title {
+    color: #212121;
+    font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    padding-top: 45px;
+}
+
+.modern .game-info {
+    color: #212121;
+    font-size: 12px;
+    padding-top: 15px;
+    text-align: center;
+}
+
+.modern .buttons {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.modern .game-button button {
+    width: 80px;
+    height: 26px;
+    background: #8d8d90;
+    border-radius: 5px;
+    color: white;
+    line-height: 26px;
+    margin-top: 15px;
+    text-align: center;
+    border: none;
+}
+
+.modern .game-button button:hover {
+    background: #cecece;
+    border: 1px solid #3d3d3d;
+    color: black;
+}
+
+.trans {
+    width: 260px;
+    height: 210px;
+    /*margin: 40px auto;*/
+    border-radius: 10px;
+    background: -moz-linear-gradient(top, rgba(69, 72, 77, 0.4) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(69, 72, 77, 0.4) 99%, rgba(69, 72, 77, 0.4) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(69, 72, 77, 0.4)), color-stop(50%, rgba(0, 0, 0, 0.4)), color-stop(99%, rgba(69, 72, 77, 0.4)), color-stop(100%, rgba(69, 72, 77, 0.4))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(69, 72, 77, 0.4) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(69, 72, 77, 0.4) 99%, rgba(69, 72, 77, 0.4) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(69, 72, 77, 0.4) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(69, 72, 77, 0.4) 99%, rgba(69, 72, 77, 0.4) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(69, 72, 77, 0.4) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(69, 72, 77, 0.4) 99%, rgba(69, 72, 77, 0.4) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(69, 72, 77, 0.4) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(69, 72, 77, 0.4) 99%, rgba(69, 72, 77, 0.4) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6645484d', endColorstr='#6645484d', GradientType=0); /* IE6-9 */
+    border: 1px solid #cccccc;
+    /*position: relative;*/
+}
+
+.trans .inner-modal {
+    width: 230px;
+    margin: 30px auto 0 auto;
+    padding-top: 5px;
+}
+
+.trans .buttons {
+    position: absolute;
+    z-index: 999999;
+    width: 100%;
+}
+
+.trans .game-button button {
+    width: 80px;
+    height: 26px;
+    background: rgb(102, 165, 242); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(102, 165, 242, 1) 0%, rgba(34, 100, 170, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(102, 165, 242, 1)), color-stop(100%, rgba(34, 100, 170, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(102, 165, 242, 1) 0%, rgba(34, 100, 170, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(102, 165, 242, 1) 0%, rgba(34, 100, 170, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(102, 165, 242, 1) 0%, rgba(34, 100, 170, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(102, 165, 242, 1) 0%, rgba(34, 100, 170, 1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#66a5f2', endColorstr='#2264aa', GradientType=0); /* IE6-9 */
+    border-radius: 15px;
+    border: 1px solid #fff;
+    color: #fff;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+    line-height: 18px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.trans .game-button button:hover {
+    background: rgb(24, 37, 107); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(24, 37, 107, 1) 0%, rgba(34, 100, 170, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(24, 37, 107, 1)), color-stop(100%, rgba(34, 100, 170, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(24, 37, 107, 1) 0%, rgba(34, 100, 170, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(24, 37, 107, 1) 0%, rgba(34, 100, 170, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(24, 37, 107, 1) 0%, rgba(34, 100, 170, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(24, 37, 107, 1) 0%, rgba(34, 100, 170, 1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#18256b', endColorstr='#2264aa', GradientType=0); /* IE6-9 */
+}
+
+.trans .title {
+    font-size: 22px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+.trans .sub-title {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    padding: 5px;
+}
+
+.trans .game-info {
+    color: #fff;
+    font-size: 10px;
+    padding: 5px;
+    text-align: center;
+}
+
+.trans .modal-shine {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: -moz-linear-gradient(-45deg, rgba(255, 255, 255, .4) 0%, rgba(255, 255, 255, 0) 47%, rgba(255, 255, 255, 0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, rgba(255, 255, 255, .4)), color-stop(47%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(255, 255, 255, 0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, .4) 0%, rgba(255, 255, 255, 0) 47%, rgba(255, 255, 255, 0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(-45deg, rgba(255, 255, 255, .4) 0%, rgba(255, 255, 255, 0) 47%, rgba(255, 255, 255, 0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(-45deg, rgba(255, 255, 255, .4) 0%, rgba(255, 255, 255, 0) 47%, rgba(255, 255, 255, 0) 100%); /* IE10+ */
+    background: linear-gradient(135deg, rgba(255, 255, 255, .4) 0%, rgba(255, 255, 255, 0) 47%, rgba(255, 255, 255, 0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#00ffffff', GradientType=1); /* IE6-9 fallback on horizontal gradient */
+    border-radius: 10px;
+}
+
+
+
+.clean {
+    width: 260px;
+    height: 210px;
+    /*margin: 25px auto;*/
+    border-radius: 2px;
+    background: -moz-linear-gradient(top, rgba(219, 216, 216, 0.13) 0%, rgba(219, 216, 216, 0.13) 17%, rgba(255, 255, 255, 0.13) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 216, 216, 0.13)), color-stop(17%, rgba(219, 216, 216, 0.13)), color-stop(100%, rgba(255, 255, 255, 0.13))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(219, 216, 216, 0.13) 0%, rgba(219, 216, 216, 0.13) 17%, rgba(255, 255, 255, 0.13) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(219, 216, 216, 0.13) 0%, rgba(219, 216, 216, 0.13) 17%, rgba(255, 255, 255, 0.13) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(219, 216, 216, 0.13) 0%, rgba(219, 216, 216, 0.13) 17%, rgba(255, 255, 255, 0.13) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(219, 216, 216, 0.13) 0%, rgba(219, 216, 216, 0.13) 17%, rgba(255, 255, 255, 0.13) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#21dbd8d8', endColorstr='#21ffffff', GradientType=0); /* IE6-9 */
+    /*position: relative;*/
+    box-shadow: inset 0 8px 43px rgba(0, 0, 0, .7);
+    border: 1px solid #ccc;
+}
+
+.clean .inner-modal {
+    width: 230px;
+    margin: 50px auto 0 auto;
+    padding-top: 5px;
+}
+
+.clean .title {
+    font-size: 22px;
+    color: #A2A2A2;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .6);
+}
+
+.clean .sub-title {
+    color: #A2A2A2;
+    font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    padding: 5px;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+}
+
+.clean .game-info {
+    color: #A2A2A2;
+    font-size: 10px;
+    padding: 5px;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .5);
+}
+
+.clean .buttons {
+    position: absolute;
+    z-index: 9999999;
+    top: 0;
+    width: 100%;
+}
+
+.clean .game-button button {
+    width: 60px;
+    height: 26px;
+    background: rgba(67, 67, 67, .4);
+    /*background: #aeaeae;*/
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+    border-top: none;
+    /*border-bottom: 1px solid #8b8b8b;*/
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .95);
+    float: left;
+    line-height: 26px;
+    margin-left: 38px;
+    position: relative;
+    top: 0;
+    text-align: center;
+    outline: none;
+}
+
+.clean .game-button button:hover {
+    background: #aeaeae;
+    border-bottom: 2px solid #8B8B8B;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+.clean .modal-shine {
+    background: url('../img/reflect.png') no-repeat top right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glass {
+    /*position: relative;*/
+    width: 529px;
+    height: 282px;
+}
+
+.glass .inner-modal {
+    width: 390px;
+    height: 130px;
+    margin: 30px auto 0 auto;
+    padding-top: 5px;
+}
+
+.glass .title {
+    font-size: 38px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'century_gothicregular';
+    text-shadow: 0 2px 2px rgba(255, 255, 255, .4);
+}
+
+.glass .sub-title {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    padding: 5px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .9);
+}
+
+.glass .game-info {
+    color: #ffffff;
+    font-size: 10px;
+    padding: 5px;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .9);
+}
+
+.glass .buttons {
+    position: absolute;
+    z-index: 9999999;
+    width: 100%;
+}
+
+.glass .game-button button {
+    font-size: 38px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'century_gothicregular';
+    text-shadow: 0 1px 2px rgba(255, 255, 255, .4);
+    border:none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+}
+
+.glass .game-button button:hover {
+    text-shadow: 0 2px 20px rgba(102, 165, 242, .9);
+    outline: none;
+}
+
+.glass .modal-shine {
+    background: url('../img/glass_front.png') no-repeat top left;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}

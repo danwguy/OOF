@@ -39,6 +39,29 @@
             $this->_template = new Template($controller, $action);
         }
 
+        public function render($page = null, $render_header = false) {
+            if(is_string($page)) {
+                //we are dealing with a specific view page
+                if($this->config->item('use_template')) {
+                    $this->override_view($page);
+                    $this->_template->render($render_header);
+                } else {
+                    $this->load->view($page);
+                }
+            } else {
+                //we have a bool or null
+                if($this->config->item('use_template')) {
+                    if(is_bool($page)) {
+                        $this->_template->render($page);
+                    } else if(is_null($page)) {
+                        $this->_template->render();
+                    } else {
+                        $this->_template->render($page);
+                    }
+                }
+            }
+        }
+
         public static function show_error($message, $code = 500, $header = 'An Error Occurred') {
             $error = Loader::load('CustomException');
             echo $error->error($message, $header, 'error_general', $code);
